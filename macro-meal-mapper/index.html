@@ -349,6 +349,12 @@
   </fieldset>
 
   <fieldset>
+    <legend>Does alcohol make an appearance?</legend>
+    <p class="hint">No judgement — but drinks are real calories (7 per gram of alcohol, straight from the course), so they deserve a seat at the table.</p>
+    <div class="pills" id="alcPills"></div>
+  </fieldset>
+
+  <fieldset>
     <legend>How much kitchen time on a weeknight?</legend>
     <div class="pills" id="pacePills"></div>
     <p class="hint">Weeknights get filled to match; weekends stay wide open. Every meal card shows its effort level, so nothing sneaks up on you.</p>
@@ -440,6 +446,7 @@ const SUPP_OK={veg:["bn","ed","pb","nt"],vegg:["bn","ed","pb","we","nt"],pesc:["
 const STORES=[["costco","Costco"],["tj","Trader Joe's"],["aldi","Aldi"],["walmart","Walmart"],["giant","Giant"],["wf","Whole Foods"],["indian","Indian grocery"]];
 const FAMS=[["solo","Just me"],["couple","Me + partner"],["family","Me + family (kids too)"]];
 const OUTS=[["rare","Rarely"],["some","1–2 times"],["lots","3+ times"]];
+const ALCS=[["no","Nope / rarely"],["social","Socially (1–2 a week)"],["yes","Most weeks, honestly"]];
 const PACES=[["grab","Grab & assemble"],["quick","15-minute meals"],["cook","I like to cook"]];
 const PACELVL={grab:0,quick:1,cook:2};
 const MODES=[["auto","Map it for me"],["self","I'll build it myself"]];
@@ -472,7 +479,7 @@ const MEALS=[
  tip:"Skip the wrap and it's gluten-free. Raita on the side = +6g protein.",brands:{wf:"Hodo or Wildwood super-firm tofu",tj:"TJ's high-protein tofu",costco:"House Foods 4-pack"}},
 {s:"b",n:"Cottage cheese pancakes",short:"CC pancakes",srv:"1 serving = 4 mini pancakes",lvl:1,gf:1,df:0,fb:4,tags:["sw","cf"],prots:["cc","ew"],ebook:1,kw:"cottage cheese oats pancake",
  comps:[["Rolled oats (blended)","40g",150,5,27,2.5],["Nonfat cottage cheese","100g",80,11,4,1],["Egg whites","100g",52,11,0,0]],
- steps:["Blend everything into a batter.","Pour minis onto a hot nonstick pan; flip when bubbles set."],
+ steps:["Blend everything into a batter with 1 tsp baking powder, vanilla, cinnamon, and a pinch of salt (all free).","Pour minis onto a hot nonstick pan; flip when bubbles set."],
  tip:"GF if your oats are certified GF. Toppings tracked separately — log the syrup!",brands:{costco:"Good Culture cottage 3-lb",aldi:"Friendly Farms cottage",walmart:"Kodiak mix shortcut"}},
 {s:"b",n:"Egg-white bites ×3",short:"Egg bites",srv:"1 serving = 3 muffins",lvl:1,gf:1,df:0,fb:1,tags:["cf"],prots:["ew","cc"],ebook:1,kw:"egg muffins",
  comps:[["Egg whites","150g",78,17,0,0],["Cottage cheese","55g",44,6,2,0.5],["Cheddar + broccoli","",95,6,3,6.5]],
@@ -512,7 +519,7 @@ const MEALS=[
  tip:"My note from the kitchen: blend the oats until they're actually flour and these are YUMMM."},
 {s:"b",n:"Greek yogurt mug pancake",short:"Mug pancake",srv:"1 serving = 1 mug",lvl:1,gf:0,df:0,fb:1,tags:["sw","cf"],prots:["yg"],kw:"mug pancake microwave",
  comps:[["Flour","30g",110,3,22,0.5],["Greek yogurt","80g",45,8,3,0],["Egg","1",70,6,0.5,5]],
- steps:["Stir everything in a mug.","Microwave ~90 sec. Syrup gets logged."],
+ steps:["Stir flour, yogurt, egg, ½ tsp baking powder, a splash of vanilla, and cinnamon in a mug.","Microwave ~90 sec — it puffs, it's magic.","Syrup and toppings get logged; the baking powder and spices are free."],
  tip:"Two minutes, one mug. My little one requests this — kid-certified."},
 {s:"b",n:"Tofu 'egg' patty muffin",short:"Tofu patty muffin",srv:"1 serving = 1 sandwich",lvl:0,gf:0,df:1,fb:4,tags:["cf"],prots:["tf"],kw:"tofu egg muffin sandwich vegan",
  comps:[["Firm tofu patty (seasoned + seared)","100g",110,12,3,6],["English muffin","1",130,5,25,1],["Kala namak + avocado smear","15g",30,0,2,2.5]],
@@ -887,6 +894,17 @@ const OUTP={"Chipotle":[550,25],"Panera":[500,22],"Chili's":[600,30],"Taco Bell"
   lvl:0,gf:1,df:1,fb:5,eff:0,tags:[],prots:[],kw:(o.n+" eating out restaurant").toLowerCase(),
   comps:[["Your order (ballpark — pre-log & adjust)","1 meal",o.est[0],o.est[1],Math.round(o.est[0]*0.45/4),Math.round(o.est[0]*0.35/9)]],
   tip:o.order});});
+/* drink cards: fixed ids 950+, treat-slot placeable, NEVER auto-scheduled, only shown if alcohol = yes/social */
+[["Glass of wine","5 oz",125,4,"Red ~125, white ~120, bubbly ~90 (4 oz). The pour is the whole game — restaurant pours are often 8 oz. Second glass = place it twice."],
+ ["Light beer","12 oz",100,5,"Regular lager runs ~155, craft IPAs 200–250. The word 'light' is doing real work."],
+ ["Hard seltzer","12 oz",100,2,"Basically a vodka soda in a can. Easy math, easy stop-point."],
+ ["Vodka + soda water","1.5 oz + soda",100,0,"Any 80-proof spirit is ~97 cal — the MIXER is the ambush. Soda water free, tonic +70, juice +100."],
+ ["Margarita","restaurant pour",300,30,"Sour mix is sugar soup. A skinny marg (fresh lime + tequila + splash of agave) lands ~150."],
+ ["Espresso martini","1 cocktail",270,25,"Dessert in a martini glass. Treat rules apply: log it first, sip it slow."]]
+ .forEach((d,i)=>{MEALS.push({id:950+i,s:"t",drink:1,n:d[0],short:d[0].length>15?d[0].slice(0,14)+"…":d[0],
+  srv:"1 drink = "+d[1],lvl:0,gf:1,df:1,fb:0,eff:0,tags:["sw"],prots:[],
+  kw:(d[0]+" alcohol drink wine beer cocktail").toLowerCase(),
+  comps:[["Alcohol + mixer","1 drink",d[2],0,d[3],0]],tip:d[4]});});
 
 /* generic grocery list for stores we don't have data for */
 const GENERIC={
@@ -916,7 +934,7 @@ const TOOLS=[
 
 /* ---------- state ---------- */
 const S={tier:null,protein:null,carbs:null,fat:null,phase:null,diet:null,gf:false,df:false,
- loves:new Set(),prots:new Set(),otherProt:"",avoid:"",stores:new Set(),myStore:"",fam:null,out:null,pace:"quick",mode:"auto"};
+ loves:new Set(),prots:new Set(),otherProt:"",avoid:"",stores:new Set(),myStore:"",fam:null,out:null,alc:"no",pace:"quick",mode:"auto"};
 const $=id=>document.getElementById(id);
 let plan=null, curWeek=0, placing=null, pendingCell=null, blocklist=new Set(), swapSel={}, CUSTOM=[];
 
@@ -954,6 +972,7 @@ function restoreState(sv){
   pills($("storePills"),STORES,"stores",true);
   pills($("famPills"),FAMS,"fam",false);
   pills($("outPills"),OUTS,"out",false);
+  pills($("alcPills"),ALCS,"alc",false);
   pills($("pacePills"),PACES,"pace",false);
   pills($("modePills"),MODES,"mode",false);
   $("bulkGate").classList.toggle("hidden",S.phase!=="bulk");
@@ -1002,6 +1021,7 @@ renderProtPills();
 pills($("storePills"),STORES,"stores",true);
 pills($("famPills"),FAMS,"fam",false);
 pills($("outPills"),OUTS,"out",false);
+pills($("alcPills"),ALCS,"alc",false);
 pills($("pacePills"),PACES,"pace",false);
 pills($("modePills"),MODES,"mode",false);
 
@@ -1066,6 +1086,7 @@ function hay(m){return(m.n+" "+m.kw+" "+m.comps.map(c=>c[0]).join(" ")).toLowerC
 function eligible(m){
   if(blocklist.has(m.id))return false;
   if(terms(S.avoid).some(t=>hay(m).includes(t)))return false;
+  if(m.drink)return S.alc!=="no";
   if(m.custom||m.out)return true;
   if(m.lvl>DIETLVL[S.diet])return false;
   if(S.gf&&!m.gf)return false;
@@ -1081,7 +1102,7 @@ function score(m){
   if(m.eff<=PACELVL[S.pace||"cook"])sc+=1;
   return sc;
 }
-function slotList(s){return MEALS.filter(m=>m.s===s&&!m.out&&eligible(m)).sort((a,b)=>score(b)-score(a));}
+function slotList(s){return MEALS.filter(m=>m.s===s&&!m.out&&!m.drink&&eligible(m)).sort((a,b)=>score(b)-score(a));}
 
 /* ---------- plan ---------- */
 function buildPlan(){
@@ -1110,7 +1131,7 @@ function buildPlan(){
   }
 }
 function portionNum(m,sk){
-  if(m.free||m.out)return 1;
+  if(m.free||m.out||m.drink)return 1;
   const [lo,hi]=TIERS[S.tier],mid=(lo+hi)/2;
   const slot=SLOTS.find(x=>x[0]===sk);
   return Math.min(3,Math.max(0.5,Math.round(2*mid*slot[2]/Math.max(1,tot(m).cal))/2));
@@ -1152,6 +1173,7 @@ function renderBand(){
   if(S.phase==="cut")guard+=" <b>Cut note:</b> the treat slot stays — log it FIRST every morning so you never once feel restricted.";
   if(S.out==="lots")guard+=" <b>You eat out 3+ times a week</b>, so I've already parked eating-out slots on Friday dinner, Saturday dinner, and Sunday lunch — drag them wherever your week actually happens, or swap in a specific restaurant from the bank.";
   if(S.out==="some")guard+=" <b>You eat out 1–2 times a week</b>, so Saturday dinner is already an eating-out slot — move it to whichever night is yours.";
+  if(S.alc!=="no")guard+=" <b>Drinks count too</b> (7 cal per gram of alcohol) — your drink cards live in the bank with honest numbers. Place them on a treat slot and log them FIRST, same as any treat.";
   if(terms(S.avoid).length)guard+=` <b>Filtered out for you:</b> ${esc(terms(S.avoid).join(", "))}.`;
   $("guardrails").innerHTML=guard;
   $("plannerSub").innerHTML=S.mode==="self"
@@ -1299,20 +1321,22 @@ function swapOptions(m){
 }
 function bankCard(m){
   const t=tot(m);
-  const chips=(m.out?'<span class="chip desi">eating out</span>':"")+(m.custom?'<span class="chip mine">your meal</span>':"")+(m.desi&&!m.out?'<span class="chip desi">desi</span>':"")+(m.gf&&!m.custom&&!m.out?'<span class="chip gfc">GF</span>':"")+(m.df&&!m.custom&&!m.out?'<span class="chip gfc">DF</span>':"")+(m.fb>=8&&!m.out?'<span class="chip fbr">fiber-forward</span>':"")+(!m.free&&!m.out?`<span class="chip eff">${EFFLABEL[m.eff]}</span>`:"");
+  const chips=(m.drink?'<span class="chip mine">drink · 21+</span>':"")+(m.out?'<span class="chip desi">eating out</span>':"")+(m.custom?'<span class="chip mine">your meal</span>':"")+(m.desi&&!m.out?'<span class="chip desi">desi</span>':"")+(m.gf&&!m.custom&&!m.out?'<span class="chip gfc">GF</span>':"")+(m.df&&!m.custom&&!m.out?'<span class="chip gfc">DF</span>':"")+(m.fb>=8&&!m.out?'<span class="chip fbr">fiber-forward</span>':"")+(!m.free&&!m.out?`<span class="chip eff">${EFFLABEL[m.eff]}</span>`:"");
   const cs=effComps(m);
   const comps=m.free?"":`<div class="mathlab">Portion math (per serving)</div><div class="scroller"><table class="comps">
     <thead><tr><th>Component</th><th>Amt</th><th>Cal</th><th>P</th><th>C</th><th>F</th></tr></thead><tbody>
     ${cs.map(c=>`<tr><td>${esc(c[0])}</td><td>${esc(c[1])}</td><td>${c[2]}</td><td>${c[3]}</td><td>${c[4]}</td><td>${c[5]}</td></tr>`).join("")}
     <tr class="tot"><td>1 serving</td><td></td><td>${t.cal}</td><td>${t.p}</td><td>${t.c}</td><td>${t.f}</td></tr></tbody></table></div>
-    ${m.custom?"":`<p class="aff" style="margin:2px 0 0;">+ ~${m.fb}g fiber per serving</p>`}`;
+    ${(m.custom||m.drink||m.out)?"":`<p class="aff" style="margin:2px 0 0;">+ ~${m.fb}g fiber · spices, herbs, extracts & leaveners are free — this is a blueprint, not scripture. Season like it's YOUR kitchen (it is).</p>`}`;
   const steps=(m.steps&&!m.custom)?`<div class="how"><b>How it comes together</b><ol>${m.steps.map(st=>`<li>${esc(st)}</li>`).join("")}</ol></div>`:"";
   const ebk=m.ebook?`<div class="ebk">Want my exact recipe + spices? It's in <a href="${EBOOK}" target="_blank" rel="noopener">the Mindful Macros Meal Plan</a>.</div>`:"";
-  const mf=m.free?"":(m.custom
+  const mf=m.free?"":(m.drink
+    ?`<div class="mf">📲 Every tracker knows "wine" — log the real pour, not the wishful one.</div>`
+    :(m.custom
     ?`<div class="mf">📲 This one's already in your tracker — that's where the numbers came from.</div>`
     :(m.out
       ?`<div class="mf">📲 Look at the menu before you go and pre-log — placeholder now, adjust after. Full playbook in the Eating Out tab.</div>`
-      :`<div class="mf">📲 <b>In MacrosFirst:</b> build this once from the components above (Kitchen → Meals), and it's one tap forever.</div>`));
+      :`<div class="mf">📲 <b>In MacrosFirst:</b> build this once from the components above (Kitchen → Meals), and it's one tap forever.</div>`)));
   const add=m.free?"":`<button class="addbtn" data-id="${m.id}">＋ Put this on my plan</button>`;
   return `<div class="bkm" id="card-${m.id}" draggable="true" tabindex="0" data-id="${m.id}">
     <button class="xbtn" data-id="${m.id}" aria-label="Never show ${esc(m.short)}">✕</button>
@@ -1323,7 +1347,7 @@ function bankCard(m){
 function renderBank(){
   const [lo,hi]=TIERS[S.tier],mid=(lo+hi)/2;
   let h=`<h2 style="margin-top:28px;">The meal bank</h2>
-  <p class="sub">Every meal stands on its own — serving size, directions, component macros, and your auto-portion. Don't love the protein? <b>Swap it and everything recalculates</b>, calendar included. ✕ retires anything forever.</p>
+  <p class="sub">Every meal stands on its own — serving size, directions, component macros, and your auto-portion. Don't love the protein? <b>Swap it and everything recalculates</b>, calendar included. ✕ retires anything forever. One heads-up: <b>component lists show only what moves the macros</b> — spices, extracts, and leaveners are calorie-free and yours to play with, so treat every card as a blueprint, not an exact recipe.</p>
   <div class="addform"><b style="color:var(--deep);">＋ Add your own meal</b>
    <p class="hint" style="margin:4px 0 0;">Got a go-to you already track? Drop it in — it joins the bank and your calendar, saved on this device.</p>
    <div class="row2">
@@ -1345,6 +1369,12 @@ function renderBank(){
     h+=`<div class="bankslot" id="bank-${sk}"><h3>${label} <span class="budget">budget ~${Math.round(mid*cpct/10)*10} cal · ~${Math.round(S.protein*ppct/5)*5}g protein</span></h3>
       <div class="meals">${L.map(bankCard).join("")||'<p class="hint">Your filters cleared this slot out — loosen the avoid list a touch.</p>'}</div></div>`;
   });
+  if(S.alc!=="no"){
+    const DR=MEALS.filter(m=>m.drink&&eligible(m));
+    h+=`<div class="bankslot" id="bank-dr"><h3>Drinks <span class="budget">7 cal per gram of alcohol — the 4th macronutrient</span></h3>
+    <p class="hint">Straight from the course: alcohol has calories and they count — usually tracked as carbs or fat. Drinks are never auto-scheduled; YOU place them, on a treat slot, logged FIRST like any treat. The full calorie cheat sheet is in House Rules.</p>
+    <div class="meals">${DR.map(bankCard).join("")}</div></div>`;
+  }
   const OUT=MEALS.filter(m=>m.out&&eligible(m));
   h+=`<div class="bankslot" id="bank-out"><h3>Eating out <span class="budget">drop these on any lunch or dinner</span></h3>
     <p class="hint">Real life includes restaurants — that's not cheating the plan, it IS the plan. Numbers are ballparks; the full ordering playbook lives in the Eating Out tab.</p>
@@ -1467,7 +1497,31 @@ function renderRules(){
    <li><b>The scale lies daily and tells the truth monthly.</b> Trend lines, clothes, photos, energy. All of it counts.</li>
    <li><b>Your cycle should never stop.</b> If it does, you're cutting too hard — eat more and talk to your doctor. Non-negotiable.</li>
   </ul>
-  <div class="callout"><b>When to get my eyes on it:</b> two full weeks where the scale, measurements, clothes, AND photos all flatline = a real plateau. Don't guess at levers — that's a <a href="https://roaspy.coachnehanautiyal.com/righttrackreviewcall" target="_blank" rel="noopener">Right-Track Review</a> conversation.</div>`;
+  <div class="callout"><b>When to get my eyes on it:</b> two full weeks where the scale, measurements, clothes, AND photos all flatline = a real plateau. Don't guess at levers — that's a <a href="https://roaspy.coachnehanautiyal.com/righttrackreviewcall" target="_blank" rel="noopener">Right-Track Review</a> conversation.</div>`
+  +(S.alc!=="no"?`
+  <h2 style="margin-top:26px;">Alcohol math (because pretending it doesn't count never worked)</h2>
+  <p class="sub">From the course: alcohol is the 4th macronutrient — <b>7 calories per gram</b>, usually tracked as carbs or fat. It counts toward your day like anything else. The rules that keep it from eating your deficit: <b>log the drink FIRST</b> (treat rules), watch the mixer (that's where cocktails go sideways), pour at home so you see the ounces, and alternate with water.</p>
+  <div class="scroller"><table><thead><tr><th>Drink</th><th>Serving</th><th>~Calories</th></tr></thead><tbody>
+  <tr><td>Champagne / prosecco</td><td class="pnum">4 oz</td><td class="pnum">90</td></tr>
+  <tr><td>White wine</td><td class="pnum">5 oz</td><td class="pnum">120</td></tr>
+  <tr><td>Red wine</td><td class="pnum">5 oz</td><td class="pnum">125</td></tr>
+  <tr><td>Light beer</td><td class="pnum">12 oz</td><td class="pnum">100</td></tr>
+  <tr><td>Regular beer / lager</td><td class="pnum">12 oz</td><td class="pnum">155</td></tr>
+  <tr><td>Craft beer / IPA</td><td class="pnum">12 oz</td><td class="pnum">200–250</td></tr>
+  <tr><td>Hard seltzer</td><td class="pnum">12 oz</td><td class="pnum">100</td></tr>
+  <tr><td>Vodka, gin, tequila, whiskey, rum (80 proof)</td><td class="pnum">1.5 oz shot</td><td class="pnum">95–100</td></tr>
+  <tr><td>Vodka + soda water</td><td class="pnum">1 drink</td><td class="pnum">100</td></tr>
+  <tr><td>Gin & tonic</td><td class="pnum">1 drink</td><td class="pnum">170</td></tr>
+  <tr><td>Aperol spritz</td><td class="pnum">1 drink</td><td class="pnum">160</td></tr>
+  <tr><td>Old fashioned</td><td class="pnum">1 drink</td><td class="pnum">180</td></tr>
+  <tr><td>Sangria</td><td class="pnum">1 glass</td><td class="pnum">200</td></tr>
+  <tr><td>Mojito</td><td class="pnum">1 drink</td><td class="pnum">215</td></tr>
+  <tr><td>Espresso martini</td><td class="pnum">1 drink</td><td class="pnum">270</td></tr>
+  <tr><td>Margarita (restaurant)</td><td class="pnum">1 drink</td><td class="pnum">250–350</td></tr>
+  <tr><td>Piña colada</td><td class="pnum">1 drink</td><td class="pnum">400+</td></tr>
+  <tr><td>Baileys / cream liqueur</td><td class="pnum">1.5 oz</td><td class="pnum">150</td></tr>
+  </tbody></table></div>
+  <p class="aff">Restaurant pours run bigger than these — when in doubt, round up, not down. Skip entirely if pregnant, breastfeeding, or if drinking doesn't serve you; your map works beautifully dry.</p>`:"");
 }
 function render(){
   renderBand();
