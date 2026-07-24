@@ -1,5 +1,7 @@
 <meta charset="utf-8">
 <title>The Macro Meal Mapper</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e4144'/%3E%3Ctext x='32' y='46' font-size='38' font-family='Arial Narrow,Arial,sans-serif' font-weight='bold' fill='%23fc8c25' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root{
     --ground:#ebf4f4; --card:#ffffff; --ink:#0e4144; --ink-soft:#3d6468;
@@ -405,7 +407,8 @@
     <div class="plannerhint"><b>Tap a meal</b> to see its full card below · <b>drag</b> meals to move or swap them (desktop) · <b>✕</b> replaces or retires a meal · day totals use your auto-portions · everything saves on this device automatically.</div>
     <div class="btnrow" style="justify-content:flex-start;">
       <button class="btn small ghost" id="shuffleBtn">Shuffle this week</button>
-      <button class="btn small ghost" onclick="window.print()">Print week + grocery list</button>
+      <button class="btn small ghost" onclick="window.print()">Print / save as PDF</button>
+      <button class="btn small ghost" id="xferBtn">📤 Send to another device</button>
     </div>
     <div id="bank"></div>
   </div>
@@ -424,7 +427,7 @@
 
   <div class="btnrow" style="margin-top:18px;">
     <button class="btn ghost" id="back2">&larr; Change my answers</button>
-    <button class="btn" onclick="window.print()">Print / save my map</button>
+    <button class="btn" onclick="window.print()">Print / save as PDF</button>
   </div>
 </section>
 
@@ -432,7 +435,7 @@
 
 <footer>
   <p><b>Disclaimer:</b> The Macro Meal Mapper is provided for informational and educational purposes only and does not constitute medical advice. It is not a substitute for guidance from a qualified healthcare professional tailored to your specific circumstances. Consult a qualified medical doctor before making changes to your nutrition, especially if you are pregnant, breastfeeding, managing a health condition or food allergy, or have a history of disordered eating. Macro tracking is not appropriate for anyone currently experiencing disordered eating. Always verify ingredient labels yourself when managing allergies. Nothing here assigns calorie targets to children — kids simply eat the family meal.</p>
-  <p>Macro values are estimates based on typical nutrition labels; your brands will vary — weigh your food, read your labels, log what's real. Your saved map lives only in this browser on this device. Grocery brand links are examples, not requirements. As an Amazon Associate, Neha earns from qualifying purchases at no additional cost to you. MacrosFirst is a third-party app; the Mapper is not affiliated with it.</p>
+  <p>Macro values are estimates based on typical nutrition labels; your brands will vary — weigh your food, read your labels, log what's real. Your saved map lives in this browser — the "Send to another device" button moves it anywhere via a private link (the link holds your data; only share it with yourself). Grocery brand links are examples, not requirements. As an Amazon Associate, Neha earns from qualifying purchases at no additional cost to you. MacrosFirst is a third-party app; the Mapper is not affiliated with it.</p>
   <p>&copy; 2026 Neha Nautiyal LLC. All rights reserved. Licensed for your individual, personal use only — sharing, reproducing, or distributing this tool or its contents is not permitted without written consent.</p>
 </footer>
 </div>
@@ -1236,11 +1239,26 @@ $("g2Add").onclick=()=>{
   $("g2List").appendChild(li);
   ["g2Name","g2Srv","g2Cal","g2P","g2C","g2F"].forEach(id=>$(id).value="");
 };
-/* resume UI */
-const sv=loadSaved();
-if(sv&&sv.plan){$("resumeBox").classList.remove("hidden");
-  $("resumeBtn").onclick=()=>restoreState(sv);
-  $("freshBtn").onclick=()=>{clearState();$("resumeBox").classList.add("hidden");};}
+/* cross-device transfer: the whole map travels inside a link (#m=...) */
+function packState(){
+  const s={S:{...S,loves:[...S.loves],prots:[...S.prots],stores:[...S.stores]},
+    plan,swapSel,blocklist:[...blocklist],custom:CUSTOM,week:curWeek};
+  return btoa(unescape(encodeURIComponent(JSON.stringify(s))));
+}
+function unpackState(b64){return JSON.parse(decodeURIComponent(escape(atob(b64))));}
+$("xferBtn").onclick=async()=>{
+  saveState();
+  const link=location.origin+location.pathname+"#m="+packState();
+  const msg="My Macro Meal Mapper map — open this link on any device and everything loads: ";
+  if(navigator.share){try{await navigator.share({title:"My Macro Meal Map",text:msg,url:link});return;}catch(_){}}
+  try{await navigator.clipboard.writeText(link);
+    const pb=bar("Link copied! Text or email it to yourself — open it on the other device and your whole map loads. ");
+    const b=document.createElement("button");b.textContent="or email it";
+    b.onclick=()=>{location.href="mailto:?subject="+encodeURIComponent("My Macro Meal Map")+"&body="+encodeURIComponent(msg+"\n\n"+link);};
+    pb.appendChild(b);setTimeout(hideBar,9000);
+  }catch(_){prompt("Copy this link and open it on your other device:",link);}
+};
+/* (transfer-link + resume boot logic runs at the end of the script, after all definitions) */
 
 /* ---------- tabs ---------- */
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
@@ -1701,5 +1719,23 @@ function render(){
   renderGrid();renderBank();
   renderGrocery();renderOut();renderFamily();renderTools();renderRules();
 }
+/* every external link opens in a new tab — including ones added in future meal batches */
+document.addEventListener("click",e=>{
+  const a=e.target.closest('a[href^="http"]');
+  if(a){a.target="_blank";a.rel="noopener";}
+});
 show(1);
+/* incoming transfer link? (must run after every const above is initialized) */
+let hashLoaded=false;
+if(location.hash.startsWith("#m=")){
+  try{const sv2=unpackState(location.hash.slice(3));
+    if(sv2&&sv2.plan){restoreState(sv2);saveState();hashLoaded=true;
+      history.replaceState(null,"",location.pathname);
+      flashHint("Map loaded from your other device — and saved here too.");}}catch(_){}
+}
+/* resume UI */
+const sv=loadSaved();
+if(!hashLoaded&&sv&&sv.plan){$("resumeBox").classList.remove("hidden");
+  $("resumeBtn").onclick=()=>restoreState(sv);
+  $("freshBtn").onclick=()=>{clearState();$("resumeBox").classList.add("hidden");};}
 </script>
