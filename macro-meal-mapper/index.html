@@ -152,6 +152,10 @@
   .bkm .how b{color:var(--deep);font-size:11px;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:2px;}
   .bkm ol{margin:2px 0;padding-left:18px;}
   .bkm ol li{margin-bottom:2px;}
+  .bkm ul.fing{margin:2px 0 6px;padding-left:18px;font-size:12.5px;color:var(--ink-soft);}
+  .bkm ul.fing li{margin-bottom:1px;}
+  .bkm details.fullr{margin-top:7px;}
+  .bkm details.fullr summary{font-size:12.5px;font-weight:700;color:var(--spice);cursor:pointer;}
   .bkm .mathlab{color:var(--deep);font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-top:8px;}
   .bkm .mf{font-size:12px;color:var(--ink-soft);margin-top:6px;border-top:1px dotted var(--line);padding-top:6px;}
   .bkm .mf a{font-weight:700;}
@@ -222,9 +226,9 @@
 
 <div class="wrap">
 <header class="top">
-  <div class="eyebrow">Watch the Scale Drop &middot; Student Tool</div>
+  <div class="eyebrow">By Neha Nautiyal &middot; @macrofriendlydesi</div>
   <h1>The Macro<br>Meal <span class="o">Mapper</span></h1>
-  <div class="byline">Your targets in. A month of flexible, real-life eating out. By Neha Nautiyal &middot; @macrofriendlydesi</div>
+  <div class="byline">Your targets in. A month of flexible, real-life eating — mapped.</div>
 </header>
 
 <div class="stepper" id="stepper">
@@ -239,17 +243,22 @@
     <button class="btn small primary" id="resumeBtn" style="margin-left:10px;">Pick up where I left off &rarr;</button>
     <button class="btn small ghost" id="freshBtn" style="margin-left:6px;">Start fresh</button></div>
   <h2>Start with your numbers</h2>
-  <p class="sub">Grab the calorie and protein targets you calculated in the course. This is not a calculator — you already did that work the right way (with real data, not a random internet formula).</p>
+  <p class="sub">Grab your calorie and protein targets. This is not a calculator, on purpose — real targets come from YOUR data, not an internet formula that's never met you.</p>
+  <details class="opt">
+    <summary>Don't have your numbers yet? Here's my method</summary>
+    <p class="hint">No random calculators. Here's how I find real numbers: <b>① Track one normal week</b> in a free app (I like MacrosFirst) — every bite, no changes, plus your weight each morning. <b>② Average the 7 days of calories.</b> <b>③ Read the trend:</b> weight flat → that average IS your maintenance. Trending up → subtract 100 and re-test a week. <b>④ For fat loss,</b> eat 10–15% under maintenance, with protein at 0.75–1.2&thinsp;g per lb (start where you are; add ~15g a week).</p>
+    <div class="callout"><b>Want me to walk you through it properly?</b> Finding your true numbers — from your own data, safely, without the start-over cycle — is exactly what my course does. <a href="https://roaspy.coachnehanautiyal.com/courseai" target="_blank" rel="noopener"><b>Watch the Scale Drop &rarr;</b></a></div>
+  </details>
   <fieldset>
     <legend>Daily calorie range</legend>
     <div class="pills" id="calPills" role="group" aria-label="Calorie range"></div>
   </fieldset>
   <fieldset>
     <legend>Daily protein target</legend>
-    <p class="hint">The number you landed on in the course (0.75&ndash;1.2&thinsp;g per lb). If you're building up to it, enter where you are <em>right now</em> — you'll add ~15&thinsp;g a week.</p>
+    <p class="hint">The way I teach it: 0.75&ndash;1.2&thinsp;g per lb of body weight. If you're building up to it, enter where you are <em>right now</em> — you'll add ~15&thinsp;g a week.</p>
     <input type="number" id="protein" min="30" max="250" step="5" inputmode="numeric" aria-label="Protein grams per day"> <b>g / day</b>
     <div class="callout spice hidden" id="protHigh"><b>Whoa, spicy.</b> That's above the ceiling I teach for women (~177&thinsp;g). Either drop it into range — or better, let me verify your numbers on a <a href="https://roaspy.coachnehanautiyal.com/righttrackreviewcall" target="_blank" rel="noopener">Right-Track Review call</a>.</div>
-    <div class="callout hidden" id="protLow"><b>That looks low.</b> If that's your build-up starting point, great — the Mapper will meet you there. If it's a guess, the course's protein lesson (0.75&ndash;1.2&thinsp;g/lb) is your friend.</div>
+    <div class="callout hidden" id="protLow"><b>That looks low.</b> If that's your build-up starting point, great — the Mapper will meet you there. If it's a guess, open "my method" above — or let's find your real numbers together in <a href="https://roaspy.coachnehanautiyal.com/courseai" target="_blank" rel="noopener">the course</a>.</div>
   </fieldset>
   <details class="opt">
     <summary>Optional: carb &amp; fat targets (only if you track them)</summary>
@@ -263,7 +272,7 @@
     <legend>What phase are you in?</legend>
     <div class="pills" id="phasePills" role="group" aria-label="Phase"></div>
     <div id="bulkGate" class="hidden">
-      <div class="callout"><b>Bulk check</b> (straight from the course): a bulk only works with consistent training and consistent protein. Real talk, not rules:</div>
+      <div class="callout"><b>Bulk check</b> (my rule, and I don't bend it): a bulk only works with consistent training and consistent protein. Real talk, not rules:</div>
       <label style="display:block;font-size:14.5px;margin:6px 0;"><input type="checkbox" id="bulkTrain"> I'm strength training consistently (and can keep it up)</label>
       <label style="display:block;font-size:14.5px;margin:6px 0;"><input type="checkbox" id="bulkProt"> I've hit my protein consistently for 2+ weeks</label>
       <div class="callout spice hidden" id="bulkWarn"><b>My honest advice:</b> stay in maintenance and build the protein habit first — the Mapper will map maintenance beautifully. Your call, no judgement.</div>
@@ -289,7 +298,7 @@
       <label class="sw"><input type="checkbox" id="gf"> Gluten-free</label>
       <label class="sw"><input type="checkbox" id="df"> Dairy-free</label>
     </div>
-    <p class="hint">Gluten-free filters to naturally-GF meals; simple swaps (GF bread, GF tortillas) open even more doors — the course label lesson has your back.</p>
+    <p class="hint">Gluten-free filters to naturally-GF meals; simple swaps (GF bread, GF tortillas) open even more doors — read the label, grams don't lie.</p>
   </fieldset>
 
   <fieldset>
@@ -350,7 +359,7 @@
 
   <fieldset>
     <legend>Does alcohol make an appearance?</legend>
-    <p class="hint">No judgement — but drinks are real calories (7 per gram of alcohol, straight from the course), so they deserve a seat at the table.</p>
+    <p class="hint">No judgement — but drinks are real calories (7 per gram of alcohol, the macronutrient nobody talks about), so they deserve a seat at the table.</p>
     <div class="pills" id="alcPills"></div>
   </fieldset>
 
@@ -423,8 +432,8 @@
 
 <footer>
   <p><b>Disclaimer:</b> The Macro Meal Mapper is provided for informational and educational purposes only and does not constitute medical advice. It is not a substitute for guidance from a qualified healthcare professional tailored to your specific circumstances. Consult a qualified medical doctor before making changes to your nutrition, especially if you are pregnant, breastfeeding, managing a health condition or food allergy, or have a history of disordered eating. Macro tracking is not appropriate for anyone currently experiencing disordered eating. Always verify ingredient labels yourself when managing allergies. Nothing here assigns calorie targets to children — kids simply eat the family meal.</p>
-  <p>Macro values are estimates based on typical nutrition labels; your brands will vary — weigh, read, and log like the course taught you. Your saved map lives only in this browser on this device. Grocery brand links are examples, not requirements. As an Amazon Associate, Neha earns from qualifying purchases at no additional cost to you. MacrosFirst is a third-party app; the Mapper is not affiliated with it.</p>
-  <p>&copy; 2026 Neha Nautiyal LLC. All rights reserved. This tool is part of the <i>Watch the Scale Drop</i> course and may not be shared, reproduced, or distributed without written consent.</p>
+  <p>Macro values are estimates based on typical nutrition labels; your brands will vary — weigh your food, read your labels, log what's real. Your saved map lives only in this browser on this device. Grocery brand links are examples, not requirements. As an Amazon Associate, Neha earns from qualifying purchases at no additional cost to you. MacrosFirst is a third-party app; the Mapper is not affiliated with it.</p>
+  <p>&copy; 2026 Neha Nautiyal LLC. All rights reserved. Licensed for your individual, personal use only — sharing, reproducing, or distributing this tool or its contents is not permitted without written consent.</p>
 </footer>
 </div>
 
@@ -452,8 +461,7 @@ const PACELVL={grab:0,quick:1,cook:2};
 const MODES=[["auto","Map it for me"],["self","I'll build it myself"]];
 const SLOTS=[["b","Breakfast",.25,.25],["l","Lunch",.28,.25],["s","Snack",.10,.15],["d","Dinner",.27,.25],["t","Treat",.10,.10]];
 const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-const EBOOK="https://roaspy.coachnehanautiyal.com/tmmmp";
-const A=id=>`https://amzn.to/${id}`;
+const A=id=>id.startsWith("http")?id:`https://amzn.to/${id}`;
 const EFFLABEL=["no-cook","15 min","cook night"];
 
 /* protein swap table: key → [label, amount, cal, P, C, F, lvl, dairyfree, glutenfree] */
@@ -476,15 +484,21 @@ const MEALS=[
 {s:"b",n:"Tofu bhurji wrap",short:"Tofu bhurji",srv:"1 serving = 150g bhurji + 1 wrap",lvl:0,gf:0,df:1,desi:1,fb:5,tags:["sp","in"],prots:["tf"],ebook:1,swap:0,kw:"tofu indian scramble",
  comps:[["Super-firm tofu (as bhurji)","150g",160,18,4,8],["Lavash wrap or roti","1",100,9,12,3],["Peppers, onion + 1 tsp oil","",60,1,6,4]],
  steps:["Grate tofu; sauté with onion, chili, turmeric, cumin.","Warm the wrap; fill and roll."],
- tip:"Skip the wrap and it's gluten-free. Raita on the side = +6g protein.",brands:{wf:"Hodo or Wildwood super-firm tofu",tj:"TJ's high-protein tofu",costco:"House Foods 4-pack"}},
+ tip:"Skip the wrap and it's gluten-free. Raita on the side = +6g protein.",brands:{wf:"Hodo or Wildwood super-firm tofu",tj:"TJ's high-protein tofu",costco:"House Foods 4-pack"},
+ full:{y:"makes 6 servings of 233g",ing:["1 package super-firm tofu, grated","10 mL avocado oil","1 tsp cumin seeds","200g (1 medium) onion","20g (4 cloves) garlic","2 green chilis","1 tbsp fresh ginger","28g tomato paste","1 tsp coriander powder · 1 tsp cumin powder · ½ tsp turmeric","pinch of hing (omit if GF)","1 tsp salt","249g frozen cut green beans + 176g frozen peas","optional: kasoori methi, cilantro, lime"],
+ dir:["Grate the tofu (no need to drain). Blend garlic, chilis, ginger into a paste.","Heat oil; sizzle cumin seeds ~1 min until fragrant.","Add the ginger-garlic-chili paste; stir so it doesn't burn (splash of water to deglaze).","Add onion; cook 3–5 min. Add tomato paste; stir a minute.","Add the ground spices + hing; mix to a paste, splash of water if dry.","Add frozen veggies; cook 5–10 min. Add tofu; mix gently, cook 5–10 min.","Finish with kasoori methi, cilantro, a squeeze of lime. Serve in a wrap, on toast, with roti — your carb, your call."]}},
 {s:"b",n:"Cottage cheese pancakes",short:"CC pancakes",srv:"1 serving = 4 mini pancakes",lvl:1,gf:1,df:0,fb:4,tags:["sw","cf"],prots:["cc","ew"],ebook:1,kw:"cottage cheese oats pancake",
  comps:[["Rolled oats (blended)","40g",150,5,27,2.5],["Nonfat cottage cheese","100g",80,11,4,1],["Egg whites","100g",52,11,0,0]],
  steps:["Blend everything into a batter with 1 tsp baking powder, vanilla, cinnamon, and a pinch of salt (all free).","Pour minis onto a hot nonstick pan; flip when bubbles set."],
- tip:"GF if your oats are certified GF. Toppings tracked separately — log the syrup!",brands:{costco:"Good Culture cottage 3-lb",aldi:"Friendly Farms cottage",walmart:"Kodiak mix shortcut"}},
+ tip:"GF if your oats are certified GF. Toppings tracked separately — log the syrup!",brands:{costco:"Good Culture cottage 48-oz",aldi:"Friendly Farms cottage",walmart:"Kodiak mix shortcut"},
+ full:{y:"makes 4 mini pancakes (1 serving)",ing:["45g old-fashioned rolled oats","100g nonfat cottage cheese","100g egg whites","1 tsp vanilla extract","1 tsp cinnamon","1 tsp baking powder","pinch of salt"],
+ dir:["Blend the oats, cinnamon & baking powder first (I keep a mini processor on the counter).","Add cottage cheese, egg whites, vanilla; blend into a batter.","Pour minis onto a hot nonstick pan — no oil needed (oil changes the fat macros).","Flip when bubbles set. Toppings (berries, syrup, chips) are welcome and logged."]}},
 {s:"b",n:"Egg-white bites ×3",short:"Egg bites",srv:"1 serving = 3 muffins",lvl:1,gf:1,df:0,fb:1,tags:["cf"],prots:["ew","cc"],ebook:1,kw:"egg muffins",
  comps:[["Egg whites","150g",78,17,0,0],["Cottage cheese","55g",44,6,2,0.5],["Cheddar + broccoli","",95,6,3,6.5]],
  steps:["Blend whites + cottage cheese; stir in broccoli + cheese.","Bake in muffin liners, 350°F ~22 min."],
- tip:"Batch 12 on Sunday. Grab 3, walk out the door."},
+ tip:"Batch 12 on Sunday. Grab 3, walk out the door.",
+ full:{y:"makes 12 muffins",ing:["600g egg whites","226g nonfat cottage cheese","100g raw broccoli, chopped small","84g sharp cheddar, shredded","1 tsp salt · ½ tsp black pepper","oil spray for the tin"],
+ dir:["Preheat oven to 350°F.","Blend egg whites, cottage cheese, salt & pepper.","Stir in raw broccoli + cheese; portion into greased muffin liners.","Bake 20–25 min. They puff, then deflate as they cool — that's normal, not a fail.","Swap any veggie in (cook watery ones first); red chili flakes or hot sauce for a kick."]}},
 {s:"b",n:"Greek yogurt power bowl",short:"Yogurt bowl",srv:"1 serving = 1 bowl",lvl:0,gf:1,df:0,fb:3,tags:["sw"],prots:["yg"],kw:"yogurt bowl parfait",
  comps:[["Nonfat Greek yogurt","170g",90,16,5,0],["Berries","100g",50,1,12,0],["Granola or nuts","20g",90,2,12,4]],
  steps:["Weigh yogurt into a bowl; top with berries + crunch. That's it — that's the recipe."],
@@ -500,7 +514,9 @@ const MEALS=[
 {s:"b",n:"Protein waffles ×2",short:"Waffles",srv:"1 serving = 2 waffles",lvl:1,gf:0,df:0,fb:2,tags:["sw","cf"],prots:["ew","pp"],ebook:1,kw:"waffles",
  comps:[["Kodiak mix","53g",190,11,30,2],["Egg","1",70,6,0.5,5],["Milk splash","30ml",15,1,1,0.5]],
  steps:["Whisk, pour into a hot waffle maker, wait for the light."],
- tip:"Or keep Kodiak frozen waffles on hand for zero-effort mornings.",brands:{costco:"Kodiak mix (big box)",walmart:"Kodiak frozen waffles"}},
+ tip:"Or keep Kodiak frozen waffles on hand for zero-effort mornings.",brands:{costco:"Kodiak mix (big box)",walmart:"Kodiak frozen waffles"},
+ full:{y:"my from-scratch version — makes 8 waffles",ing:["56g whole wheat flour","56g protein powder (unflavored/unsweetened)","20g honey","1 tsp baking soda + 2 tsp baking powder","1 tsp vanilla extract · ½ tsp salt","3 eggs","20 mL avocado oil","160 mL skim milk"],
+ dir:["Blend all ingredients into a batter.","Spray the waffle maker top & bottom; pour ~⅓ cup.","Cook until browned, ~5–8 min. Too sticky? Wait longer, spray more.","No protein powder? Swap 1:1 for more flour. +20 mL milk turns this into muffin batter (400°F, 11–14 min)."]}},
 {s:"b",n:"Besan chilla ×2",short:"Besan chilla",srv:"1 serving = 2 chillas",lvl:0,gf:1,df:1,desi:1,fb:6,tags:["sp","in"],prots:["bn"],kw:"chilla besan chickpea indian",
  comps:[["Besan (chickpea flour)","60g",220,13,36,4],["Onion, chili, veg","",20,1,4,0],["Oil for the pan","1 tsp",45,0,0,5]],
  steps:["Whisk besan + water + salt + spices to a crepe batter.","Fold in onion, chili, cilantro.","Ladle onto a hot oiled pan; 2–3 min per side."],
@@ -508,31 +524,33 @@ const MEALS=[
 {s:"b",n:"Spinach & cottage cheese thepla",short:"Thepla",srv:"1 serving = 2 theplas",lvl:0,gf:0,df:0,desi:1,fb:4,tags:["sp","in"],prots:["cc"],kw:"thepla spinach indian flatbread",
  comps:[["Atta (whole wheat flour)","50g",180,6,32,2],["Cottage cheese (kneaded in)","80g",65,9,3,1],["Spinach, chopped","big handful",15,1,2,0],["Oil for the pan","1 tsp",45,0,0,5]],
  steps:["Knead flour + cottage cheese + spinach + spices into a soft dough.","Roll thin; cook on a hot tawa with a brush of oil."],
- tip:"The cottage cheese hides in the dough — protein-smuggling at its finest. From my own kitchen rotation."},
+ tip:"The cottage cheese hides in the dough — protein-smuggling at its finest. From my own kitchen rotation.",cred:["the original post","https://www.instagram.com/p/DKMvfIwAw-2/"]},
 {s:"b",n:"Korean-style veg pancakes",short:"Korean pancakes",srv:"1 serving = 2 pancakes",lvl:1,gf:0,df:1,fb:3,tags:["ko","sp"],prots:["tf","we"],kw:"korean pancake pajeon savory",
  comps:[["Flour","40g",145,4,29,0.5],["Egg","1",70,6,0.5,5],["Shredded veg (cabbage, carrot, scallion)","1 cup",30,2,6,0],["Tofu, crumbled in","80g",85,9,2,5]],
  steps:["Whisk flour + egg + water to a thin batter; fold in veg + tofu.","Pan-fry like a pancake until edges crisp.","Dip: soy + rice vinegar + chili."],
- tip:"Savory breakfast that eats like a treat. Add gochugaru if you like heat."},
+ tip:"Savory breakfast that eats like a treat. Add gochugaru if you like heat.",cred:["the original post","https://www.instagram.com/p/DQYnekVkS5Q/"]},
 {s:"b",n:"Oatmeal choco-chip muffins ×2",short:"Oat CC muffins",srv:"1 serving = 2 muffins",lvl:1,gf:1,df:0,fb:4,tags:["sw","cf"],prots:["cc"],kw:"oatmeal muffins chocolate",
  comps:[["Rolled oats (blended fine)","40g",150,5,27,2.5],["Cottage cheese","80g",65,9,3,1],["Egg","½",35,3,0,2.5],["Chocolate chips","10g",50,1,6,3]],
  steps:["Blend the oats LONGER than you think — it should be flour.","Blend in cottage cheese + egg; stir in chips.","Bake 350°F ~18 min."],
- tip:"My note from the kitchen: blend the oats until they're actually flour and these are YUMMM."},
+ tip:"My note from the kitchen: blend the oats until they're actually flour and these are YUMMM.",cred:["Kookgenot","https://kookgenot.nl/simple-cottage-cheese-oatmeal-muffins/"]},
 {s:"b",n:"Greek yogurt mug pancake",short:"Mug pancake",srv:"1 serving = 1 mug",lvl:1,gf:0,df:0,fb:1,tags:["sw","cf"],prots:["yg"],kw:"mug pancake microwave",
  comps:[["Flour","30g",110,3,22,0.5],["Greek yogurt","80g",45,8,3,0],["Egg","1",70,6,0.5,5]],
  steps:["Stir flour, yogurt, egg, ½ tsp baking powder, a splash of vanilla, and cinnamon in a mug.","Microwave ~90 sec — it puffs, it's magic.","Syrup and toppings get logged; the baking powder and spices are free."],
- tip:"Two minutes, one mug. My little one requests this — kid-certified."},
+ tip:"Two minutes, one mug. My little one requests this — kid-certified.",cred:["Can You Microwave","https://canyoumicrowavewiki.com/2-minute-microwave-greek-yogurt-pancake-mug-2/"]},
 {s:"b",n:"Tofu 'egg' patty muffin",short:"Tofu patty muffin",srv:"1 serving = 1 sandwich",lvl:0,gf:0,df:1,fb:4,tags:["cf"],prots:["tf"],kw:"tofu egg muffin sandwich vegan",
  comps:[["Firm tofu patty (seasoned + seared)","100g",110,12,3,6],["English muffin","1",130,5,25,1],["Kala namak + avocado smear","15g",30,0,2,2.5]],
  steps:["Slice tofu into a patty; season with kala namak (the eggy magic) + turmeric.","Sear 3 min per side; build the sandwich."],
- tip:"Dairy-free, egg-free, and it still scratches the McMuffin itch."},
+ tip:"Dairy-free, egg-free, and it still scratches the McMuffin itch.",cred:["Chef Bai","https://chefbai.substack.com/p/no-egg-mcmuffin-sandwiches"]},
 {s:"b",n:"Breakfast sandwich",short:"Bfast sandwich",srv:"1 serving = 1 sandwich",lvl:0,gf:0,df:0,fb:6,tags:["cf"],prots:["st"],ebook:1,kw:"sandwich veggie patty",
  comps:[["Bread","1 slice",110,5,22,1.5],["Veggie patty","1",110,10,4,4.5],["Cheese slice + hummus","",115,6,5,8],["Avocado","30g",50,1,3,4.5]],
  steps:["Layer hummus, patty, cheese, avocado; toast until melty."],
- tip:"10 minutes flat.",brands:{walmart:"MorningStar grillers",aldi:"Earth Grown patties"}},
-{s:"b",n:"High-protein bagel + cream cheese",short:"Protein bagel",srv:"1 serving = 1 bagel",lvl:0,gf:0,df:0,fb:5,tags:["cf"],prots:[],ebook:1,kw:"bagel",
- comps:[["High-protein bagel","1",180,26,24,2],["Whipped cream cheese","28g",80,2,2,7]],
+ tip:"10 minutes flat. My 2-minute hummus: blend a can of chickpeas + 113g Greek yogurt + garlic + lime + salt.",brands:{walmart:"MorningStar grillers",aldi:"Earth Grown patties"},
+ full:{y:"makes 1 sandwich",ing:["1 slice of bread","28g hummus","1 slice reduced-fat cheddar","1 veggie patty","¼ avocado, sliced","a handful of lettuce"],
+ dir:["Spread hummus on the bread; cheese on top.","Wet both sides of the frozen patty; microwave 60 sec one side, 15 the other.","Stack patty, avocado, lettuce; toast until the cheese melts.","Customize with tomato, olives, pickles — log what you add."]}},
+{s:"b",n:"Hero bagel + cream cheese",short:"Hero bagel",srv:"1 serving = 1 bagel",lvl:0,gf:0,df:0,fb:21,tags:["cf"],prots:[],ebook:1,kw:"bagel hero",
+ comps:[["Hero Classic bagel","1",130,19,25,1],["Whipped cream cheese","28g",80,2,2,7]],
  steps:["Toast, schmear, done."],
- tip:"Lower-effort morning, still 28g. Pair with coffee + Fairlife.",brands:{walmart:"The Better Bagel",wf:"The Better Bagel"}},
+ tip:"Lower-effort morning: 21g protein AND 21g of fiber — most of your daily target in one bagel. Pair with coffee + Fairlife.",brands:{walmart:"Hero bagels",wf:"Hero bagels"}},
 {s:"b",n:"Moong dal chilla",short:"Moong chilla",srv:"1 serving = 2 chillas",lvl:0,gf:1,df:1,desi:1,fb:6,tags:["sp","in"],prots:["bn"],kw:"moong dal chilla indian",
  comps:[["Split moong (soaked, blended)","60g dry",210,14,36,1],["Green chili, ginger, cilantro","",10,0,2,0],["Oil for the pan","1 tsp",45,0,0,5]],
  steps:["Soak moong 4+ hours; blend with ginger + chili.","Season; ladle onto a hot oiled pan.","Flip when the edges lift; serve with chutney."],
@@ -541,7 +559,9 @@ const MEALS=[
 {s:"l",n:"Red lentil dhal + rice",short:"Dhal + rice",srv:"1 serving = 1.5 cups dhal + ¾ cup rice",lvl:0,gf:1,df:1,desi:1,fb:8,tags:["sp","in","cf"],prots:["bn"],ebook:1,kw:"dhal lentil indian",
  comps:[["Masoor dhal (cooked)","from 60g dry",210,15,36,1],["Tadka (ghee or oil)","1 tsp",45,0,0,5],["Basmati rice (cooked)","150g",195,4,42,0.5]],
  steps:["Pressure-cook dhal with turmeric + salt.","Sizzle the tadka; pour over.","Serve over measured rice."],
- tip:"Instant Pot batch = 4 lunches. Rice is your calorie lever.",brands:{indian:"Swad masoor dhal",costco:"Microwave basmati packs"}},
+ tip:"Instant Pot batch = 4 lunches. Rice is your calorie lever.",brands:{indian:"Swad masoor dhal",costco:"Microwave basmati packs"},
+ full:{y:"makes 10 servings of 250g",ing:["10 mL avocado oil · 1 tsp cumin seeds","200g (1 medium) onion","15g (4 cloves) garlic · 2 green chilis · 1 tbsp fresh ginger","28g tomato paste","1 tsp coriander powder · 1 tsp cumin powder · ½ tsp turmeric","pinch of hing (omit if GF) · 2 tsp salt","378g red split lentils (masoor dhal), rinsed until clear","330g (2 medium) zucchini, chopped — or any veg","6 cups water","optional: kasoori methi, cilantro, lime"],
+ dir:["Blend garlic, chilis, ginger into a paste.","Sauté mode: oil, then cumin seeds ~1 min. Add onion, 3–5 min.","Add the paste (splash of water to deglaze), then tomato paste, then spices; mix to a paste.","Stop sauté. Add water, salt, zucchini, rinsed lentils.","High pressure 8 min, natural release 15–20 min. Mix well.","Finish with kasoori methi, cilantro, lime. Serve over your measured rice.","No Instant Pot? Stovetop until the lentils are totally mushy when pressed. Don't swap the lentil type — cook times differ."]}},
 {s:"l",n:"Cottage cheese pasta bake",short:"CC pasta bake",srv:"1 serving = ¼ of an 8×8 pan",lvl:0,gf:1,df:0,fb:8,tags:["cf","it"],prots:["cc"],swap:1,kw:"pasta bake cottage italian",
  comps:[["Chickpea pasta","56g dry",190,11,32,3],["Cottage cheese (blended)","150g",120,17,6,1.5],["Marinara","100g",50,2,8,1],["Mozzarella","28g",80,6,1,6]],
  steps:["Boil pasta 2 min short of done.","Blend cottage cheese smooth; stir with marinara + pasta.","Top with mozzarella; bake 375°F ~20 min."],
@@ -549,23 +569,25 @@ const MEALS=[
 {s:"l",n:"French-style lentil salad",short:"Lentil salad",srv:"1 serving = 1 big bowl",lvl:0,gf:1,df:1,fb:10,tags:["md"],prots:["bn"],kw:"lentil salad french",
  comps:[["Green/brown lentils (cooked + well drained)","150g",170,13,30,0.5],["Cucumber, tomato, red onion, herbs","",40,1,8,0],["Dijon vinaigrette","15g",90,0,1,9]],
  steps:["Cook lentils firm, not mushy; DRAIN well (soupy salad is sad salad).","Toss warm lentils with vinaigrette so they drink it up.","Fold in veg + herbs."],
- tip:"From my own list: add whatever veggies you have — it takes everything."},
+ tip:"From my own list: add whatever veggies you have — it takes everything.",cred:["NYT Cooking","https://cooking.nytimes.com/recipes/1026766-french-lentil-salad"]},
 {s:"l",n:"Tzatziki chickpea salad",short:"Tzatziki chickpea",srv:"1 serving = 1 bowl",lvl:0,gf:1,df:0,fb:8,tags:["md"],prots:["bn","yg"],kw:"tzatziki chickpea greek salad",
  comps:[["Chickpeas","130g",180,10,30,3],["Greek yogurt + garlic + dill","80g",50,8,4,0],["Cucumber, lemon","",20,1,4,0]],
  steps:["Stir yogurt, garlic, dill, lemon into tzatziki.","Fold in chickpeas + cucumber. Pita optional (and logged)."],
- tip:"Tzatziki does double duty: dressing AND protein assist."},
+ tip:"Tzatziki does double duty: dressing AND protein assist.",cred:["NYT Cooking","https://cooking.nytimes.com/recipes/1025698-tzatziki-chickpea-salad"]},
 {s:"l",n:"TVP taco soup",short:"Taco soup",srv:"1 serving = 2 cups",lvl:0,gf:1,df:1,fb:9,tags:["mx","sp","cf"],prots:["st","bn"],swap:0,kw:"tvp taco soup",
  comps:[["TVP","25g dry",80,13,6,0.5],["Black beans + corn","130g",140,8,26,1],["Tomatoes + taco spices + broth","",70,2,13,0.5]],
  steps:["Everything in one pot.","Simmer 20 minutes.","Top with whatever's in the fridge — each topping gets logged."],
- tip:"20-minute pantry dinner-for-lunch. Freezes beautifully."},
+ tip:"20-minute pantry dinner-for-lunch. Freezes beautifully.",cred:["My Pure Plants","https://mypureplants.com/vegan-taco-soup-in-20-minutes/"]},
 {s:"l",n:"Tofu shawarma wrap",short:"Tofu shawarma",srv:"1 serving = 1 wrap",lvl:0,gf:0,df:1,fb:5,tags:["md","sp"],prots:["tf"],swap:0,kw:"tofu shawarma wrap",
  comps:[["Tofu, sliced thin + shawarma spices","120g",130,14,2,7],["Pita","1",130,5,25,1],["Tahini drizzle","15g",90,3,3,8],["Cucumber, tomato, pickled onion","",20,1,4,0]],
  steps:["Slice tofu THIN; toss generously in shawarma marinade.","Roast or air-fry until edges char.","Stack in pita; drizzle tahini."],
- tip:"My kitchen note: thin slices + more marinade = the whole game."},
+ tip:"My kitchen note: thin slices + more marinade = the whole game.",cred:["Dr Vegan Blog","https://drveganblog.com/crispy-tofu-shawarma/"]},
 {s:"l",n:"Sweet potato & black bean wrap",short:"SP + bean wrap",srv:"1 serving = 1 wrap",lvl:0,gf:0,df:1,fb:10,tags:["mx"],prots:["bn"],ebook:1,kw:"wrap black bean sweet potato",
  comps:[["Tortilla or lavash","1",110,5,20,2.5],["Black beans","130g",140,9,25,0.5],["Roasted sweet potato","100g",90,2,21,0],["Avocado or cheese","30g",50,1,3,4.5]],
  steps:["Roast sweet potato cubes (or microwave + smash).","Warm beans with cumin; build the wrap."],
- tip:"A high-protein wrap adds +10g for the same bite."},
+ tip:"A high-protein wrap adds +10g for the same bite. My guac: blend 150g avocado + 150g Greek yogurt + garlic + juice of 2 limes + salt.",
+ full:{y:"makes 4 wraps",ing:["1 medium sweet potato, cubed","1 package super-firm tofu, shredded (no draining needed)","1 can (15.5 oz) black beans, rinsed & drained","150g ripe avocado, sliced","10 mL avocado oil · 2 tsp salt · ½ tsp cayenne (paprika for less heat)","1 serving guacamole","2–4 lavash wraps","lime wedges · optional cilantro, pickled onions"],
+ dir:["Preheat 400°F; line two sheet pans.","Sweet potato on one pan, shredded tofu on the other; massage each with 1 tsp salt, 1 tsp oil, ¼ tsp cayenne.","Bake 20 min, flipping halfway, until the potato is fork-tender.","Toast the lavash if you like. Spread guac; layer sweet potato, beans, tofu, avocado.","Lime squeeze, optional extras, wrap, done."]}},
 {s:"l",n:"Cottage-cheese stuffed peppers ×2",short:"Stuffed peppers",srv:"1 serving = 2 pepper halves",lvl:0,gf:1,df:0,fb:4,tags:["md","cf"],prots:["cc"],kw:"stuffed peppers",
  comps:[["Bell peppers","2 halves",30,1,7,0],["Cottage cheese + rice filling","150g + 75g",220,19,27,1.5],["Melted cheese top","21g",80,5,1,6]],
  steps:["Halve + seed peppers; roast 10 min at 400°F.","Mix cottage cheese, cooked rice, herbs; stuff.","Top with cheese; bake 15 more min."],
@@ -573,7 +595,9 @@ const MEALS=[
 {s:"l",n:"Mediterranean chickpea salad",short:"Med chickpea salad",srv:"1 serving = 1 big bowl",lvl:0,gf:1,df:0,fb:8,tags:["md"],prots:["bn"],ebook:1,kw:"chickpea salad feta",
  comps:[["Chickpeas","130g",180,10,30,3],["Feta","40g",100,6,2,8],["Cucumber, tomato, olives + vinaigrette","",80,1,5,6]],
  steps:["Chop, toss, done — it's better after 20 minutes in the fridge."],
- tip:"Drop the feta for dairy-free; add grilled paneer or tofu to re-anchor protein."},
+ tip:"Drop the feta for dairy-free; add grilled paneer or tofu to re-anchor protein. My tofu feta: cube extra-firm tofu, marinate hours in 60mL apple cider vinegar + nutritional yeast + garlic powder + oregano + lime + salt.",
+ full:{y:"makes 10 servings of 109g",ing:["1 can (15.5 oz) chickpeas, rinsed & drained","1 cucumber, diced","¼ red onion, chopped","65g pitted kalamata olives, chopped","1 red bell pepper, chopped","1 serving tofu feta (or 40g real feta — fat up, protein down)","dressing: 20 mL balsamic vinegar + 10 mL extra-virgin olive oil + 1 tsp salt + ½ tsp black pepper"],
+ dir:["Shake the dressing in a sealed jar.","Combine veggies + chickpeas + feta in a big bowl.","Pour, toss, adjust salt. Better after 20 minutes.","Greens (spinach, arugula) welcome — add just before eating so they don't wilt."]}},
 {s:"l",n:"Leftovers, remixed",short:"Leftovers",srv:"whatever last night was",lvl:0,gf:1,df:1,free:1,fb:0,tags:["cf"],prots:[],kw:"leftovers",
  comps:[["Last night's dinner","1 portion",0,0,0,0]],
  steps:["Reheat. Maybe add a fried egg or fresh chutney to make it feel new."],
@@ -581,11 +605,13 @@ const MEALS=[
 {s:"l",n:"Lentil soup + toast",short:"Lentil soup",srv:"1 serving = 1.5 cups + 1 slice",lvl:0,gf:0,df:1,fb:9,tags:["cf"],prots:["bn"],ebook:1,kw:"soup lentil",
  comps:[["Lentil soup","350g",230,13,35,4],["Bread, toasted","1 slice",110,5,22,1.5]],
  steps:["Sauté onion + carrot + celery; add lentils, broth, cumin.","Simmer 25 min; blitz half for creaminess."],
- tip:"Freezes beautifully. GF: skip the toast or use GF bread."},
+ tip:"Freezes beautifully. GF: skip the toast or use GF bread.",
+ full:{y:"makes 10 servings of 250g",ing:["10 mL (2 tsp) avocado oil","200g (1 medium) onion, chopped","25g (6 cloves) garlic, minced","28g tomato paste (or salsa/marinara — whatever's in the house)","200g carrots + 150g celery, chopped","206g (1 cup) French lentils, rinsed","1.5 packages chorizo seitan","1 tsp each: coriander powder, cumin powder, dried thyme, Italian seasoning","2 tsp salt · 1 tsp black pepper","4 cups water"],
+ dir:["Instant Pot sauté: oil → onion 3–5 min → garlic 1 min.","Add carrots + celery; rinse lentils while they cook.","Add tomato paste; stir a few minutes. Add seitan; cancel sauté.","Add spices, lentils, 4 cups water; combine thoroughly.","High pressure 18 min, natural release.","Stir; finish with lime, parmesan, or Greek yogurt. Stovetop works too — cook until lentils mash between your fingers."]}},
 {s:"l",n:"Broccoli & potato soup, protein-ified",short:"Broccoli potato soup",srv:"1 serving = 2 cups",lvl:0,gf:1,df:1,fb:6,tags:["cf"],prots:["tf"],kw:"broccoli potato soup",
  comps:[["Broccoli + potato + onion, simmered","300g",160,6,32,1],["Silken tofu (blended in for creaminess)","150g",80,7,3,4]],
  steps:["Simmer broccoli + potato + onion in broth until soft.","Blend with silken tofu — instant creamy, zero cream.","Season hard: pepper, nutritional yeast, lemon."],
- tip:"My trick from the recipe list: silken tofu (or Greek yogurt) makes it creamy AND protein-forward."},
+ tip:"My trick from the recipe list: silken tofu (or Greek yogurt) makes it creamy AND protein-forward.",cred:["NYT Cooking","https://cooking.nytimes.com/recipes/767814516-broccoli-and-potato-soup"]},
 {s:"l",n:"Whipped cottage dip plate",short:"Cottage dip plate",srv:"1 serving = 1 plate",lvl:0,gf:0,df:0,fb:5,tags:["md"],prots:["cc"],kw:"dip cottage plate",
  comps:[["Blended cottage cheese + roasted red pepper","150g",130,17,7,2],["Veggie sticks","big handful",40,1,8,0],["Pita, cut in triangles","1",130,5,25,1]],
  steps:["Blend cottage cheese + roasted red pepper + garlic until silky.","Plate with veg + pita like you're fancy."],
@@ -618,7 +644,7 @@ const MEALS=[
 {s:"s",n:"Chili-cheese paneer pinwheels ×2",short:"Paneer pinwheels",srv:"1 serving = 2 pinwheels",lvl:0,gf:0,df:0,desi:1,fb:1,tags:["sp","in","cf"],prots:["pn"],kw:"paneer pinwheels puff pastry",
  comps:[["Puff pastry","40g",155,2,13,10],["Paneer + cheese + chili filling","40g",110,7,1,9]],
  steps:["Thaw pastry fully; roll it a little thinner (less doughy).","Spread filling, roll, slice, bake 400°F ~15 min."],
- tip:"Party snack from my list — halve the cheese like I do; the flavor's already loud."},
+ tip:"Party snack from my list — halve the cheese like I do; the flavor's already loud.",cred:["Love Laugh Mirch","https://www.lovelaughmirch.com"]},
 {s:"s",n:"Quest chips + salsa",short:"Quest chips",srv:"1 serving = 1 bag",lvl:0,gf:1,df:0,fb:4,tags:["mx","sp"],prots:[],kw:"chips",
  comps:[["Quest tortilla chips","1 bag",140,19,5,4.5],["Salsa","60g",15,0,3,0]],
  steps:["Open bag. Portion salsa. Feel smug about 19g protein."],
@@ -659,39 +685,45 @@ const MEALS=[
 {s:"d",n:"Spicy garlic tofu + broccoli",short:"Spicy garlic tofu",srv:"1 serving = 1 plate + optional rice",lvl:0,gf:1,df:1,fb:6,tags:["ko","sp","th"],prots:["tf"],swap:0,kw:"spicy garlic tofu sambal",
  comps:[["Super-firm tofu, crisped","150g",160,18,4,8],["Garlic-sambal sauce (easy on the maple)","",60,1,12,1],["Steamed broccoli","1 cup",40,3,8,0],["Rice (optional lever)","100g",130,3,28,0]],
  steps:["Crisp tofu cubes in a hot pan or air fryer.","Sizzle LOTS of garlic; add sambal oelek + a small drizzle of maple + soy.","Toss tofu + broccoli through the sauce."],
- tip:"The most-made dinner in my house. My notes: skip the shallots, less maple, MORE sambal."},
+ tip:"The most-made dinner in my house. My notes: skip the shallots, less maple, MORE sambal.",cred:["Pick Up Limes","https://www.pickuplimes.com/recipe/spicy-garlic-tofu-3"]},
 {s:"d",n:"Sheet-pan peanut tofu + veggies",short:"Peanut tofu pan",srv:"1 serving = ¼ sheet pan + rice",lvl:0,gf:1,df:1,fb:6,tags:["th"],prots:["tf","pb"],swap:0,kw:"peanut tofu sheet pan",
  comps:[["Tofu, cubed","120g",130,14,2,7],["Peanut sauce","25g",130,5,5,10],["Broccoli + red pepper","1.5 cups",50,3,10,0.5],["Rice","100g",130,3,28,0]],
  steps:["Everything on one pan; roast 400°F ~25 min.","Toss through peanut sauce in the last 5."],
- tip:"LOVE — peanut-buttery and one pan. Weigh the sauce; peanut butter is sneaky."},
+ tip:"LOVE — peanut-buttery and one pan. Weigh the sauce; peanut butter is sneaky.",cred:["Joy Food Sunshine","https://joyfoodsunshine.com/sheet-pan-crispy-tofu-vegetables-peanut-sauce/"]},
 {s:"d",n:"Peanut butter noodles + tofu",short:"PB noodles",srv:"1 serving = 1 bowl",lvl:0,gf:0,df:1,fb:4,tags:["th","ko","cf"],prots:["tf","pb"],swap:2,kw:"peanut butter noodles",
  comps:[["Noodles","56g dry",200,7,40,1],["PB-soy-chili sauce","20g",120,5,4,9],["Tofu, boiled or seared","100g",110,12,2,6]],
  steps:["Boil noodles; keep a splash of noodle water.","Whisk PB + soy + chili + that water into a sauce.","Toss with tofu."],
- tip:"From my list: make a smaller portion than you think (it's rich), and boiled tofu works great."},
+ tip:"From my list: make a smaller portion than you think (it's rich), and boiled tofu works great.",cred:["NYT Cooking","https://cooking.nytimes.com/recipes/1025047-peanut-butter-noodles"]},
 {s:"d",n:"Vegan TVP bolognese",short:"TVP bolognese",srv:"1 serving = 1.5 cups",lvl:0,gf:1,df:1,fb:9,tags:["it","cf"],prots:["st"],swap:1,kw:"bolognese tvp pasta italian",
  comps:[["Chickpea pasta","56g dry",190,11,32,3],["TVP (rehydrated in the sauce)","25g dry",80,13,6,0.5],["Marinara + soffritto","150g",70,2,12,1]],
  steps:["Sauté onion + carrot + garlic; add marinara.","Stir TVP straight into the simmering sauce — it drinks the flavor.","Toss with pasta."],
- tip:"My note: skip edamame noodles with this one — chewy on chewy. Chickpea pasta is the move."},
+ tip:"My note: skip edamame noodles with this one — chewy on chewy. Chickpea pasta is the move.",cred:["Food.com","https://www.food.com/recipe/vegan-bolognese-285382"]},
 {s:"d",n:"TVP burgers",short:"TVP burgers",srv:"1 serving = 1 burger",lvl:0,gf:0,df:1,fb:5,tags:["cf","mx"],prots:["st"],kw:"tvp burger veggie",
  comps:[["TVP patty (TVP + binder + spices)","1 patty",140,16,12,2],["Bun","1",110,5,21,1.5],["Lettuce, tomato, onion + sauce","",30,1,4,1.5]],
  steps:["Rehydrate TVP; mix with binder, vegan Worcestershire, spices.","Form patties; sear hard on both sides.","Make extra — they're salad topper gold all week."],
- tip:"I make these WEEKLY. Cut up leftovers into salads, lettuce wraps, sandwiches."},
+ tip:"I make these WEEKLY. Cut up leftovers into salads, lettuce wraps, sandwiches.",cred:["My Pure Plants","https://mypureplants.com/vegan-burger-tvp/"]},
 {s:"d",n:"Tandoori tofu tacos",short:"Tofu tacos",srv:"1 serving = 2 tacos",lvl:0,gf:1,df:1,desi:1,fb:6,tags:["sp","in","mx"],prots:["tf"],ebook:1,swap:0,kw:"tofu tacos indian",
  comps:[["Super-firm tofu, tandoori-spiced","120g",130,14,2,7],["Corn tortillas","2",120,2,24,2],["Slaw","",40,1,4,2],["Yogurt-mint sauce","60g",35,6,2,0]],
  steps:["Toss tofu in tandoori marinade; air-fry or broil.","Warm tortillas; everyone builds their own."],
- tip:"The family-favorite crossover. DF: skip the yogurt sauce.",brands:{tj:"TJ's high-protein tofu",wf:"Hodo tofu"}},
+ tip:"The family-favorite crossover. DF: skip the yogurt sauce. My raita: Greek yogurt + grated cucumber + carrot + cumin + a splash of water. My chutney: blend 2 bunches cilantro + 2 green chilies + lime + salt + a little sugar.",brands:{tj:"TJ's high-protein tofu",wf:"Hodo tofu"},
+ full:{y:"makes 4 tacos (95g tofu each)",ing:["1 package super-firm tofu, grated (no draining)","marinade: 58g nonfat Greek yogurt + 15g tomato paste + 6 mL olive oil","1 tsp salt · 1 heaping tsp each coriander, cumin, paprika","½ tsp black pepper · ½ tsp garam masala · ¼ tsp turmeric","2 tbsp kasoori methi · pinch of hing (omit if GF)","4 garlic naan (or any bread/tortilla)","raita + cilantro chutney for building"],
+ dir:["Mix marinade + spices in a big bowl; fold in grated tofu.","Marinate ~1 hour. Preheat 400°F.","Spread tofu on parchment; bake 10 min, flip, 8–10 more.","Toast the naan; spread raita, pile tofu, top with chutney, fold.","I load the raita with cucumber + carrots so the veg is built in."]}},
 {s:"d",n:"Coconut curry + rice",short:"Coconut curry",srv:"1 serving = 1.5 cups + ¾ cup rice",lvl:0,gf:1,df:1,fb:5,tags:["th","sp"],prots:["tf"],ebook:1,swap:0,kw:"curry thai coconut",
  comps:[["Super-firm tofu","120g",130,14,2,7],["Light coconut curry sauce","120ml",90,1,4,8],["Veggies","1 cup",40,2,7,0],["Rice","150g",195,4,42,0.5]],
  steps:["Bloom curry paste; add light coconut milk.","Simmer veg + tofu in the sauce 10 min."],
- tip:"Light coconut milk halves the fat. Rice is your calorie lever.",brands:{walmart:"Thai Kitchen curry paste",tj:"TJ's curry simmer sauce"}},
+ tip:"Light coconut milk halves the fat. Rice is your calorie lever. Tastes even better the next day.",brands:{walmart:"Thai Kitchen curry paste",tj:"TJ's curry simmer sauce"},
+ full:{y:"makes 8 servings of 300g",ing:["10 mL avocado oil","250g (1 medium) onion, chopped","11g (2 cloves) garlic + 5g ginger, minced","188g (1 medium) red bell pepper, chopped","454g (1 lb) frozen cauliflower florets + 189g frozen peas","2 packages super-firm tofu, cubed","1 can (14 oz) lite coconut milk","44g (3 tbsp) red curry paste","1 tsp ground coriander · 1 tsp black pepper · 2 tsp salt","1 lime · ¼ cup cilantro · 4 scallions","1 can (15.5 oz) chickpeas, rinsed (optional protein boost)"],
+ dir:["Oil in a hot pan; onion 3–5 min; garlic + ginger 1 min; bell pepper 2 min.","Add frozen veg until they soften a bit.","Pour in coconut milk, tofu, curry paste, spices; mix well.","Simmer 10–20 min until veggies are done.","Lime squeeze, cilantro, scallions; serve over your measured rice. Chili flakes if you want heat."]}},
 {s:"d",n:"Chickpea coconut curry + tofu",short:"Chickpea curry",srv:"1 serving = 2 cups",lvl:0,gf:1,df:1,fb:9,tags:["sp","in","th"],prots:["bn","tf"],kw:"chickpea coconut curry",
  comps:[["Chickpeas","130g",180,10,30,3],["Light coconut curry base","120ml",90,1,4,8],["Tofu, boiled in salted water first","100g",110,12,2,6]],
  steps:["Boil tofu cubes in salty water 5 min (my trick — extra oomph, better texture).","Simmer chickpeas in the coconut base.","Add tofu; simmer 5 more."],
- tip:"Countless makes in my kitchen. The boiled-tofu trick is non-negotiable."},
+ tip:"Countless makes in my kitchen. The boiled-tofu trick is non-negotiable.",cred:["PureWow","https://www.purewow.com/recipes/chickpea-vegetable-coconut-curry"]},
 {s:"d",n:"Three-bean chili",short:"Chili",srv:"1 serving = 1.5 cups",lvl:0,gf:1,df:0,fb:12,tags:["mx","sp","cf"],prots:["st","bn"],ebook:1,swap:0,kw:"chili tvp",
  comps:[["TVP / soy curls","30g dry",95,15,7,0.5],["Kidney + black beans","130g",140,9,25,0.5],["Tomatoes, peppers, spices","",60,2,10,0.5],["Cheddar on top","21g",80,5,1,6]],
  steps:["Everything in one pot; simmer 25+ min.","DF: skip the cheese, add avocado."],
- tip:"Crumbles disappear into it — nobody at the table will know.",brands:{aldi:"Canned beans for pennies"}},
+ tip:"Crumbles disappear into it — nobody at the table will know. My big-batch version uses chorizo seitan; TVP works the same.",brands:{aldi:"Canned beans for pennies"},
+ full:{y:"my batch version — makes 10 servings of 350g",ing:["6 mL avocado oil","200g (1 medium) sweet onion · 15g (3 cloves) garlic","700g bell peppers (mixed colors)","700g squash (2 zucchini + 1 yellow)","4 cans (15.5 oz) beans — black, pinto, 2 kidney — rinsed","1 can (28 oz) crushed fire-roasted tomatoes","1 can chipotle peppers in adobo (to your spice level; adobo-only = mild but flavorful)","1 bunch cilantro, stems and leaves separated","1 vegetable bouillon cube (or 1 cup broth)","1 package chorizo seitan","1 tbsp cumin powder · 1 tbsp dried oregano · 2 tsp salt · ½ tsp pepper"],
+ dir:["Oil in a big pot; onion 3–5 min; garlic 1 min; peppers, then squash.","Add the fire-roasted tomatoes.","Blend cilantro STEMS + bouillon + 1 chipotle in adobo; add to the pot (this is the flavor secret).","Add all the beans; grind the seitan in the processor and add.","Simmer until the flavors marry. Top with avocado, lime, Greek yogurt, pepper jack — all logged.","Even better tomorrow."]}},
 {s:"d",n:"Beef & bean chili",short:"Beef chili",srv:"1 serving = 1.5 cups",lvl:4,gf:1,df:1,fb:10,tags:["mx","sp","cf"],prots:["bf","bn"],swap:0,kw:"beef chili",
  comps:[["93% lean ground beef","120g",170,22,0,9],["Kidney + black beans","130g",140,9,25,0.5],["Tomatoes, peppers, spices","",60,2,10,0.5]],
  steps:["Brown the beef; drain if needed.","Add beans, tomatoes, chili spices.","Simmer 25+ min — longer is better."],
@@ -699,7 +731,9 @@ const MEALS=[
 {s:"d",n:"Buffalo cauliflower casserole",short:"Buffalo casserole",srv:"1 serving = ⅙ of the pan",lvl:0,gf:1,df:0,fb:5,tags:["sp","cf"],prots:["st"],ebook:1,kw:"buffalo casserole",
  comps:[["Cauliflower + soy curls","200g",160,15,18,4],["Buffalo sauce + light ranch","",90,1,3,8],["Cheese","28g",110,7,1,9]],
  steps:["Toss cauliflower + soy curls in buffalo sauce.","Layer in a dish, ranch + cheese on top.","Bake 400°F ~25 min."],
- tip:"Assemble ahead, bake at 6pm. Weeknight armor."},
+ tip:"Assemble ahead, bake at 6pm. Weeknight armor. My buffalo sauce: melt 6g butter, stir in 45mL hot sauce + 22g honey + 10mL apple cider vinegar + 15g tomato paste + garlic powder + salt + pepper.",
+ full:{y:"makes 10 servings of 218g",ing:["2 cans (15.5 oz) chickpeas, rinsed & drained","2 celery sticks, chopped","½ head cauliflower (or 454g frozen florets)","182g (1 cup) brown rice","2 cups vegetable broth","1 tsp onion powder · 25g (¼ cup) nutritional yeast","½ cup buffalo sauce","25g (5 cloves) garlic, minced","452g (2 cups) cottage cheese","optional: ranch dip on top (Greek yogurt + ranch seasoning)"],
+ dir:["Preheat 400°F. In an oiled casserole, layer IN ORDER: chickpeas, celery, cauliflower, brown rice. Do not mix.","Heat broth + onion powder + nutritional yeast + buffalo sauce to a boil; pour over. Don't mix.","Sprinkle garlic + cottage cheese on top. Still don't mix.","Cover with foil; bake ~60 min until the bottom is browned.","Careful lifting the foil (steam!). Stir, re-cover 10 min so the rice finishes.","Garnish with ranch + spring onion."]}},
 {s:"d",n:"Cottage-cheese flatbread pizza",short:"CC flatbread pizza",srv:"1 serving = 1 flatbread",lvl:0,gf:0,df:0,fb:4,tags:["it","cf"],prots:["cc"],kw:"pizza flatbread italian",
  comps:[["Lavash or flatbread","1",100,9,12,3],["Blended cottage cheese base","100g",80,11,4,1],["Mozzarella","28g",80,6,1,6],["Marinara + veg","",50,2,8,0.5]],
  steps:["Blend cottage cheese smooth; spread on the flatbread.","Marinara, veg, mozzarella on top.","Bake 425°F 8–10 min until the edges crisp."],
@@ -711,7 +745,7 @@ const MEALS=[
 {s:"d",n:"Corn & poblano enchiladas",short:"Enchiladas",srv:"1 serving = 2 enchiladas",lvl:0,gf:1,df:0,fb:8,tags:["mx","sp","cf"],prots:["bn"],kw:"enchiladas poblano corn",
  comps:[["Corn tortillas","2",120,2,24,2],["Corn + poblano + pepper jack filling","",150,7,12,8],["Black beans (my add — fiber + protein)","65g",70,4,12,0],["Salsa roja over the top","60g",30,1,5,0.5]],
  steps:["Char poblanos; mix with corn, beans, cheese.","Fill + roll tortillas; sauce over the top.","Bake 375°F ~20 min."],
- tip:"Amazing flavors — the black beans are my upgrade for fiber and a little protein."},
+ tip:"Amazing flavors — the black beans are my upgrade for fiber and a little protein.",cred:["the original reel","https://www.instagram.com/reel/C_lMfadxKRu/"]},
 {s:"d",n:"Sheet-pan paneer fajitas",short:"Paneer fajitas",srv:"1 serving = 2 fajitas",lvl:0,gf:1,df:0,desi:1,fb:5,tags:["mx","sp","in"],prots:["pn"],swap:0,kw:"paneer fajitas",
  comps:[["Paneer, sliced","80g",235,14,2,18],["Peppers + onions, roasted","",50,1,10,0.5],["Corn tortillas","2",120,2,24,2]],
  steps:["Toss paneer + peppers + onions in fajita spices.","Roast 400°F ~15 min, one pan.","Warm tortillas; build at the table."],
@@ -719,7 +753,9 @@ const MEALS=[
 {s:"d",n:"Chickpea pasta + meatless balls",short:"Pasta + meatless balls",srv:"1 serving = 1.5 cups",lvl:0,gf:1,df:1,fb:10,tags:["it","cf"],prots:["st","bn"],ebook:1,swap:1,kw:"pasta meatballs italian",
  comps:[["Chickpea pasta","56g dry",190,11,32,3],["Meatless balls","3",140,13,7,6],["Marinara","120g",60,2,10,1]],
  steps:["Simmer balls in the marinara while pasta boils.","Toss, plate, parm if you're tracking it."],
- tip:"11g protein in the pasta before the balls even show up.",brands:{tj:"TJ's Meatless Meatballs",wf:"365 plant-based meatballs"}},
+ tip:"11g protein in the pasta before the balls even show up. Store-bought balls work; my from-scratch version is below.",brands:{tj:"TJ's Meatless Meatballs",wf:"365 plant-based meatballs"},
+ full:{y:"my meatless balls — makes 16 (47 cal each)",ing:["92g TVP","1 cup vegetable broth (½ bouillon cube in boiling water)","24 mL tamari","235g (1 medium) onion, chopped","30g oat flour (I grind old-fashioned oats)","10g nutritional yeast","1 lavash flatbread, toasted & blended into breadcrumbs","1 tsp paprika · 1½ tsp garlic powder · 1 tsp dried parsley · 1½ tsp Italian seasoning","salt & pepper to taste · spray of olive oil"],
+ dir:["Preheat 400°F. Hydrate TVP in the hot broth ~15 min.","Mix in onion, breadcrumbs, nutritional yeast, tamari, spices.","Add oat flour last; mix.","Scoop tablespoons, roll into balls, place on a greased sheet.","Bake 20–25 min, flipping halfway, until cooked through.","Simmer in marinara while your pasta boils."]}},
 {s:"d",n:"Dhal + sabzi + roti night",short:"Dhal-sabzi-roti",srv:"1 serving = 1 cup dhal + sabzi + 1 roti",lvl:0,gf:0,df:1,desi:1,fb:9,tags:["sp","in","cf"],prots:["bn"],kw:"dhal sabzi roti indian",
  comps:[["Dhal","200g",170,12,29,1],["Sabzi with 1 tsp oil","150g",90,2,8,5],["Roti","1",100,3,18,2.5]],
  steps:["The plate you already know how to make.","Weigh YOUR portions: dhal is the anchor, roti count is the lever."],
@@ -727,7 +763,7 @@ const MEALS=[
 {s:"d",n:"Khichdi (comfort in a pot)",short:"Khichdi",srv:"1 serving = 1.5 cups",lvl:0,gf:1,df:1,desi:1,fb:7,tags:["in","cf"],prots:["bn"],kw:"khichdi kichadi rice lentil porridge",
  comps:[["Rice","40g dry",145,3,32,0.5],["Split moong dal","40g dry",140,9,24,0.5],["Ghee or oil + jeera tadka","1 tsp",45,0,0,5]],
  steps:["Rinse rice + moong; pressure cook with turmeric + salt.","Tadka on top; dahi on the side (logged)."],
- tip:"Countless makes. Sick-day food, sad-day food, any-day food. DF: use oil for the tadka."},
+ tip:"Countless makes. Sick-day food, sad-day food, any-day food. DF: use oil for the tadka.",cred:["My Heart Beets","https://myheartbeets.com/instant-pot-khichdi-rice-lentil-porridge/"]},
 {s:"d",n:"Palak paneer, lightened + rice",short:"Palak paneer",srv:"1 serving = 1 cup + ½ cup rice",lvl:0,gf:1,df:0,desi:1,fb:4,tags:["sp","in","cf"],prots:["pn"],swap:0,kw:"palak paneer spinach indian",
  comps:[["Paneer","80g",235,14,2,18],["Spinach gravy (yogurt, not cream)","150g",60,4,6,2],["Rice","100g",130,3,28,0]],
  steps:["Blanch + blend spinach with ginger, garlic, chili.","Simmer with spices; stir in yogurt off-heat.","Add seared paneer cubes; serve over rice."],
@@ -735,15 +771,17 @@ const MEALS=[
 {s:"d",n:"Spiced pea stew + yogurt",short:"Pea stew",srv:"1 serving = 1.5 cups",lvl:0,gf:1,df:0,fb:8,tags:["in","sp","cf"],prots:["bn","yg"],kw:"pea stew spiced yogurt",
  comps:[["Green peas, spiced + stewed","150g",120,8,21,0.5],["Greek yogurt, swirled in","60g",35,6,2,0],["Tadka oil + spices","1 tsp",45,0,0,5]],
  steps:["Sizzle cumin + ginger in oil; add peas + tomato; stew 15 min.","Swirl yogurt in off-heat; roti or rice gets logged separately."],
- tip:"Humble, cheap, and quietly 14g of protein."},
+ tip:"Humble, cheap, and quietly 14g of protein.",cred:["NYT Cooking","https://cooking.nytimes.com/recipes/1026665-spiced-pea-stew-with-yogurt"]},
 {s:"d",n:"Tofu cabbage stir fry",short:"Tofu cabbage",srv:"1 serving = 1 big bowl",lvl:0,gf:1,df:1,fb:6,tags:["ko","th"],prots:["tf"],swap:0,kw:"tofu cabbage stir fry",
  comps:[["Super-firm tofu","120g",130,14,2,7],["Cabbage + carrot, seared hard","2 cups",50,2,10,0.5],["Soy-garlic sauce","30g",45,1,8,0.5]],
  steps:["Sear cabbage in a screaming-hot pan until edges char.","Add crisped tofu + sauce; toss 2 min."],
- tip:"Cabbage is the cheapest volume food in the store. Rice optional (and logged)."},
+ tip:"Cabbage is the cheapest volume food in the store. Rice optional (and logged).",cred:["Plant Based RD","https://plantbasedrdblog.com/2022/08/tofu-cabbage-stir-fry/"]},
 {s:"d",n:"Tofu noodle stir fry",short:"Noodle stir fry",srv:"1 serving = 1 big bowl",lvl:0,gf:1,df:1,fb:7,tags:["th","ko"],prots:["tf"],ebook:1,swap:1,kw:"stir fry noodles",
  comps:[["Chickpea or kelp noodles","1 serving",150,8,24,2],["Super-firm tofu","120g",130,14,2,7],["Stir-fry veg","1 cup",50,2,9,0.5],["Sauce","30g",45,1,8,0.5]],
  steps:["Crisp tofu; set aside.","Stir-fry veg hard; add noodles + sauce + tofu."],
- tip:"Kelp noodles are nearly free calorie-wise — spend the savings on extra tofu."},
+ tip:"Kelp noodles are nearly free calorie-wise — spend the savings on extra tofu.",
+ full:{y:"makes 8 servings of 200g",ing:["10 mL avocado oil","200g (1 medium) onion + 15g (3 cloves) garlic","100g carrot + 145g red bell pepper, thin strips","250g (2 crowns) broccoli, chopped","1 package kelp noodles (or chickpea pasta)","2 packages super-firm tofu, cubed","sauce: 10g garlic + 2 tbsp fresh ginger, minced","10g sesame oil · 120 mL tamari (soy if not GF)","27g sambal oelek · 50g brown sugar · 20 mL rice vinegar"],
+ dir:["Oil in a hot wok; onion 3–5 min; garlic 1 min.","Add all the veggies; stir-fry.","Whisk the sauce while nothing burns.","Add sauce, noodles, tofu; mix thoroughly; cook until veg is done to your liking.","Tune the sauce like I do: more brown sugar = sweeter, more sambal = hotter, more tamari = saltier."]}},
 {s:"d",n:"Shrimp tacos",short:"Shrimp tacos",srv:"1 serving = 2 tacos",lvl:2,gf:1,df:0,fb:5,tags:["mx","sp"],prots:["fs"],swap:0,kw:"shrimp tacos fish",
  comps:[["Shrimp, seasoned","120g",100,23,0,1],["Corn tortillas","2",120,2,24,2],["Slaw + light crema","",80,2,5,5]],
  steps:["Toss shrimp in chili-lime seasoning.","Sear 2 min per side.","Build with slaw + a light crema drizzle."],
@@ -764,19 +802,23 @@ const MEALS=[
 {s:"t",n:"Chocolate silken mousse",short:"Choc mousse",srv:"1 serving = ½ cup",lvl:0,gf:1,df:1,fb:2,tags:["sw"],prots:["tf"],ebook:1,kw:"chocolate mousse tofu",
  comps:[["Silken tofu, blended","150g",80,7,3,4],["Good dark chocolate, melted","15g",80,1,7,6]],
  steps:["Blend until there are NO chunks whatsoever — keep going.","Fold in melted chocolate; chill 1 hour."],
- tip:"Use really good chocolate (Guittard extra dark, mmm) and shelf-stable silken tofu blends easiest.",brands:{wf:"365 or Mori-Nu silken"}},
+ tip:"Use really good chocolate (Guittard extra dark, mmm) and shelf-stable silken tofu blends easiest.",brands:{wf:"365 or Mori-Nu silken"},
+ full:{y:"makes 4 ramekins",ing:["1 package silken tofu (shelf-stable blends smoothest)","80g good chocolate baking bar","6g cocoa powder","30 mL maple syrup","1 tsp vanilla extract"],
+ dir:["Melt the chocolate in 15-second microwave bursts, stirring each time.","Blend EVERYTHING until perfectly uniform — no chunks, keep going.","Pour into 4 ramekins; chill (or eat one warm, I won't tell).","Top with fruit, coconut flakes, whipped cream — logged, obviously."]}},
 {s:"t",n:"Ninja Creami protein ice cream",short:"Protein ice cream",srv:"1 serving = 1 pint (yes, really)",lvl:0,gf:1,df:0,fb:1,tags:["sw"],prots:["pp"],ebook:1,kw:"ice cream creami",
  comps:[["Fairlife milk","240ml",110,13,6,4.5],["Protein powder","½ scoop",60,10,2,1],["Sugar-free pudding mix","10g",35,0,9,0]],
  steps:["Mix, freeze 24 hrs, spin. Respin with a splash of milk if crumbly."],
- tip:"A whole pint that ends the day at a protein win."},
+ tip:"A whole pint that ends the day at a protein win. My yogurt version: mix 120mL skim milk + 75g vanilla Greek yogurt + 300g toasted-coconut yogurt — freezer overnight, blender with ice, or the Creami's lite setting all work.",
+ full:{y:"makes 1 Creami pint",ing:["240 mL Fairlife milk","½ scoop protein powder","10g sugar-free pudding mix (the texture secret)","any flavor add-in: 10g cocoa for chocolate, 10g vanilla bean paste for vanilla"],
+ dir:["Whisk everything in the Creami pint; freeze 24 hours.","Spin on 'lite ice cream'. Crumbly? Splash of milk, respin.","Toppings logged: Tate's crumble, chocolate chips, coconut flakes."]}},
 {s:"t",n:"3-ingredient Greek yogurt cake",short:"Yogurt cake",srv:"1 serving = 1 slice (⅛)",lvl:1,gf:1,df:0,fb:0,tags:["sw"],prots:["yg"],kw:"yogurt cake gluten free",
  comps:[["Greek yogurt","60g",35,6,3,0],["Eggs","¾",55,5,0.5,4],["Cornstarch","8g",30,0,7,0]],
  steps:["Whisk yogurt + eggs + cornstarch; pour into a lined pan.","Bake 350°F ~40 min; chill before slicing (it sets like cheesecake)."],
- tip:"SO GOOD and not sweet at all — a touch of whipped cream + berries on top (logged, obviously)."},
+ tip:"SO GOOD and not sweet at all — a touch of whipped cream + berries on top (logged, obviously).",cred:["Hungry Happens","https://hungryhappens.net/3-ingredient-greek-yogurt-cake-no-sugar-added-and-gluten-free/"]},
 {s:"t",n:"Lemon cottage cheese bars",short:"Lemon CC bars",srv:"1 serving = 1 bar",lvl:1,gf:0,df:0,fb:1,tags:["sw"],prots:["cc"],kw:"lemon bars cottage",
  comps:[["Blended cottage cheese + egg + lemon filling","",90,8,6,2.5],["Shortbread-ish base","20g",90,1,11,4.5]],
  steps:["Press the base into a lined pan; par-bake 10 min.","Blend filling silky-smooth; pour + bake until just set."],
- tip:"Fresh lemon carries it — I under-sugared my first batch and honestly still loved it."},
+ tip:"Fresh lemon carries it — I under-sugared my first batch and honestly still loved it.",cred:["Silli Bake","https://www.sillibake.com/blog/lemon-cottage-cheese-bars"]},
 {s:"t",n:"Cottage cheese doughnut holes ×3",short:"CC doughnut holes",srv:"1 serving = 3 holes",lvl:1,gf:0,df:0,fb:1,tags:["sw","cf"],prots:["cc"],kw:"doughnut donut holes cottage",
  comps:[["Cottage cheese + flour dough","",130,8,18,3],["Cinnamon sugar roll","5g",20,0,5,0]],
  steps:["Mix a soft dough; scoop into balls.","Air-fry ~8 min at 350°F; roll warm in cinnamon sugar."],
@@ -805,11 +847,138 @@ const MEALS=[
  comps:[["Greek yogurt or hung dahi","120g",65,11,4,0],["Mango","100g",60,1,15,0],["Cardamom + pistachio sprinkle","5g",30,1,1,2]],
  steps:["Layer, sprinkle, pretend it took effort."],
  tip:"Basically shrikhand's gym-going cousin. Skip the pistachio if nuts are out."},
+// ======= BATCH 2: the rest of the recipe book + gap-fillers (always append here, never insert above) =======
+{s:"b",n:"Avocado toast, protein-smuggled",short:"Avocado toast",srv:"1 serving = 106g spread + your carb",lvl:0,gf:1,df:1,fb:8,tags:["cf"],prots:["ed","bn"],ebook:1,kw:"avocado toast edamame chickpea smash",
+ comps:[["Edamame-chickpea-avocado smash","106g",166,8,19,6.5],["Your carb (bread, pita, roti...)","1 slice",110,5,22,1.5]],
+ steps:["Microwave edamame 4 min with a splash of water.","Mash with chickpeas + avocado + spices; spread on your carb."],
+ tip:"Avocado toast that actually holds protein. GF carb keeps the whole thing GF. Chaat masala on top? We've done it. Taco Bell diablo sauce? That too.",
+ full:{y:"makes 6 servings of 106g",ing:["150g (1 medium) ripe avocado","1 can (15.5 oz) chickpeas, rinsed & drained","200g frozen shelled edamame","1¼ tsp salt · ¾ tsp black pepper · 1½ tsp garlic powder","20 mL lime juice (1 lime)"],
+ dir:["Cook edamame (I microwave with 2–3 tbsp water, 4 min).","Combine edamame, chickpeas, avocado; mash to your texture (mini processor works).","Add spices + lime; mix thoroughly.","Spread on anything: bread, pita, lavash, focaccia, roti, naan.","Optional: red pepper flakes, a little parm, chaat masala."]}},
+{s:"b",n:"Make-ahead egg strata",short:"Egg strata",srv:"1 serving = 250g slice",lvl:1,gf:0,df:0,fb:3,tags:["cf"],prots:["we","yg"],ebook:1,kw:"egg strata casserole bake",
+ comps:[["Eggs + Greek yogurt + cheese","",150,13,3,9],["Bread cubes","",60,3,10,1.5],["Broccoli + cauliflower + onion","",40,3,3,1.2]],
+ steps:["Assemble the night before; fridge overnight.","Straight from fridge to a 375°F oven, 60–75 min."],
+ tip:"The brunch flex: assemble Saturday night, bake Sunday morning, feed everyone from one dish.",
+ full:{y:"makes 10 servings of 250g",ing:["10g unsalted butter","1 onion, chopped · 3 cloves garlic, minced","1 lb frozen cauliflower + 1 lb frozen broccoli florets","6–9 slices bread, cubed (I've used Dave's thin-sliced and sourdough)","65g pepper jack + 100g shaved romano/parmesan/asiago","9 large eggs","226g nonfat Greek yogurt · 66 mL skim milk","30g Dijon mustard","1¾ tsp salt · ¾ tsp black pepper · ½ tsp nutmeg"],
+ dir:["Melt butter; sauté onion 3–5 min, garlic 1 min; add broccoli + cauliflower and stir.","Whisk eggs with yogurt, milk, Dijon, salt, pepper, nutmeg.","In a greased casserole: layer ⅓ bread, ⅓ veg, ⅓ cheese; repeat twice, ending with cheese.","Pour the egg mixture over; cover with foil; fridge overnight.","Next morning: 375°F, covered, straight from the fridge, 60–75 min."]}},
+{s:"b",n:"Savory moong waffles",short:"Savory waffles",srv:"1 serving = 2 waffles",lvl:0,gf:1,df:1,desi:1,fb:8,tags:["sp","in"],prots:["bn","tf"],ebook:1,kw:"savory waffles moong dal tofu",
+ comps:[["Moong-tofu waffle batter, cooked","2 waffles",248,20,33,4]],
+ steps:["Soak moong; blend with chilies + ginger; grate tofu straight in.","Spices + cilantro; waffle-maker 5–8 min until browned."],
+ tip:"A chilla that went to the gym AND got waffle-crisp edges. Dip in raita or chutney. Omit the hing for GF.",
+ full:{y:"makes 8 waffles",ing:["208g raw split moong lentils, soaked (overnight, or a few hours in boiled water)","220g extra-firm tofu, grated into the batter","¼ bunch cilantro · 1 tbsp fresh ginger · 3 green chilies","1½ tsp salt · 2 tbsp kasoori methi","1 heaping tsp coriander & cumin powder","pinch of hing (omit if GF)","oil spray"],
+ dir:["Blend soaked lentils, chilies, ginger (immersion blender works).","Grate tofu directly into the batter; add spices + cilantro; mix.","Spray waffle maker top & bottom; ~⅓ cup per waffle.","Cook until browned, 5–8 min. Serve with raita or chutney."]}},
+{s:"l",n:"Orzo salad with tofu feta",short:"Orzo salad",srv:"1 serving = 220g",lvl:0,gf:0,df:1,fb:7,tags:["md","it"],prots:["bn","tf","nt"],ebook:1,kw:"orzo pasta salad pistachio cannellini radicchio",
+ comps:[["Orzo + cannellini + tofu feta salad","220g",247,14,32,7]],
+ steps:["Cook orzo; dress warm so it drinks the vinaigrette.","Fold in beans, olives, pistachios, radicchio, basil, tofu feta."],
+ tip:"Contains pistachios — the avoid box has your back if nuts are out. Bitter radicchio + salty olives + crunchy pistachios = the fancy potluck flex.",
+ full:{y:"makes 10 servings of 220g",ing:["200g (10 oz) raw orzo","58 mL (¼ cup) white balsamic vinegar · 28 mL (2 tbsp) olive oil","75g pitted kalamata olives","10g (2 cloves) garlic, grated","79g (½ cup) roasted salted pistachios, chopped","2 cans (15.5 oz) cannellini beans, rinsed & drained","1 small head radicchio, chopped","10g fresh basil, chopped","1 batch tofu feta (extra-firm tofu marinated in ACV + nutritional yeast + garlic powder + oregano + lime + salt)"],
+ dir:["Cook orzo per the package; add vinegar + oil while warm so it doesn't stick.","Prep everything else while it cools to not-steaming.","Mix well; taste and adjust. Devour."]}},
+{s:"l",n:"Grilled cheese + tomato soup",short:"Grilled cheese + soup",srv:"1 serving = 1 sandwich + 290g soup",lvl:0,gf:0,df:0,fb:5,tags:["cf"],prots:["cc"],ebook:1,kw:"grilled cheese tomato soup",
+ comps:[["Keto-bread grilled cheese","1 sandwich",258,20,26.5,8],["Cottage-cheese tomato soup","290g",48,4,7,1]],
+ steps:["Simmer the soup; blend with the cottage cheese (that's the protein trick).","Toast the sandwich next to it; dunk shamelessly."],
+ tip:"The soup hides 2 cups of cottage cheese and nobody has ever noticed. Rainy-day food that pulls its macro weight.",
+ full:{y:"sandwich = 1 serving · soup makes 10 × 290g",ing:["Grilled cheese: 2 slices keto bread + 2 slices reduced-fat cheddar (butter optional, logged)","Soup: 10 mL avocado oil","200g (1 medium) onion + 25g (5 cloves) garlic","2 cans (28 oz) peeled tomatoes + 14g tomato paste","2 tsp dried basil · 1 tsp sugar · 1 tsp salt · ½ tsp pepper","2 cups vegetable broth","452g (2 cups) nonfat cottage cheese","150g baby spinach, chopped"],
+ dir:["Oil, onion 3–5 min, garlic 1 min; tomato paste (deglaze with broth); basil.","Add tomatoes + broth + salt + sugar; simmer covered ~20 min.","Add cottage cheese; blend (let steam escape!); simmer 5 more.","Stir in spinach; toast the sandwich until melty; serve together."]}},
+{s:"l",n:"Pepperoni quesadilla",short:"Quesadilla",srv:"1 serving = 1 quesadilla",lvl:0,gf:0,df:0,fb:3,tags:["cf","mx"],prots:["st"],ebook:1,kw:"quesadilla pepperoni seitan lavash",
+ comps:[["Lavash flatbread","1",100,9,12,3],["Part-skim mozzarella","55g",165,13,3,10],["Seitan pepperoni","60g",206,26,12,6]],
+ steps:["Cheese on half the lavash, pepperoni on top, fold.","Toast until melty; dip in marinara or hot sauce."],
+ tip:"48g of protein in a quesadilla. Not-that-hungry days: half a lavash works.",
+ full:{y:"makes 1 quesadilla",ing:["1 lavash flatbread","55g part-skim mozzarella, shredded","60g seitan pepperoni","marinara / ketchup / hot sauce for dipping"],
+ dir:["Sprinkle cheese on half the lavash; layer pepperoni.","Fold, toast in the toaster oven until melted.","Dip and call it a day. Add veggies or mix cheeses (pepper jack + cheddar is my move)."]}},
+{s:"l",n:"Caprese pasta salad",short:"Caprese pasta",srv:"1 serving = ⅙ of the bowl",lvl:0,gf:1,df:1,fb:6,tags:["it","md"],prots:["bn","tf"],ebook:1,kw:"caprese pasta salad chickpea tomato basil",
+ comps:[["Chickpea pasta caprese with tofu feta","1 serving",237,18,29,5.5]],
+ steps:["Cook + cool the pasta; shake the vinaigrette in a jar.","Toss with tomatoes, tofu feta, pepperoni, basil ribbons."],
+ tip:"Check your chickpea pasta's ingredients — chickpea flour only, no emulsifiers. Fresh mozz swap works if not vegan (fat up, protein down).",
+ full:{y:"makes 6 servings",ing:["8 oz chickpea pasta","10 oz cherry tomatoes, quartered","1 serving tofu feta","38g seitan pepperoni, quartered","10g fresh basil, cut into ribbons","dressing: 20 mL balsamic + 13 mL extra-virgin olive oil + 1 tsp salt + ½ tsp pepper + 1 tsp dried basil"],
+ dir:["Cook pasta per the box; cool while you prep.","Shake all dressing ingredients in a tight-lidded jar (a jam jar works).","Combine everything in a big bowl; toss; adjust to taste."]}},
+{s:"l",n:"Creamy chickpea soup",short:"Chickpea soup",srv:"1 serving = 288g",lvl:0,gf:1,df:1,fb:9,tags:["cf"],prots:["bn","tf"],ebook:1,kw:"chickpea soup potato silken",
+ comps:[["Chickpea-potato-silken tofu soup","288g",250,12,40,4]],
+ steps:["Sauté the veg; simmer with broth + potato.","Add chickpeas + silken tofu; blend or don't — both work."],
+ tip:"Silken tofu is the creaminess AND the protein. A second package takes it higher.",
+ full:{y:"makes 6 servings of 288g",ing:["10 mL avocado oil","200g onion + 15g (3 cloves) garlic","85g carrots + 168g celery, chopped","349g (2 medium) potatoes, chopped","2 cans (15.5 oz) chickpeas, rinsed","1 package silken tofu","4 cups veggie broth · 1 tsp salt","optional: thyme, Italian seasoning"],
+ dir:["Oil, onion 3–5 min, garlic 1 min; carrots + celery, then potato.","Add broth + salt; cook until fork-tender.","Add chickpeas + silken tofu; simmer.","Blend fully, half, or not at all — thickness is your call."]}},
+{s:"s",n:"Sweet potato fries",short:"SP fries",srv:"1 serving = 65g",lvl:0,gf:1,df:1,fb:3,tags:["cf"],prots:[],ebook:1,kw:"sweet potato fries baked",
+ comps:[["Baked sweet potato fries","65g",111,2,23.5,1]],
+ steps:["Toss matchsticks with spices; bake 400°F 20–25 min, flipping once."],
+ tip:"My pairing: fries + a cheese stick + berries or a yogurt = a snack plate that behaves like a meal.",
+ full:{y:"makes 8 servings of 65g",ing:["918g (2 medium) sweet potatoes, cut into matchsticks","5g nutritional yeast (omit for less cheesy)","1 tsp paprika (or chili powder for heat)","1 tsp salt · 5 mL olive oil","optional: 32g cornstarch for extra crunch"],
+ dir:["400°F; line a baking sheet.","Massage the spices + oil through the matchsticks with your hands.","Spread so none touch; bake 20–25 min, flipping halfway, until fork-tender.","Crunchier? Toss in cornstarch before baking."]}},
+{s:"s",n:"Lime-garlic slaw",short:"Lime slaw",srv:"1 serving = 100g",lvl:0,gf:1,df:1,fb:3,tags:["mx"],prots:[],ebook:1,kw:"slaw cabbage lime cilantro",
+ comps:[["Red cabbage-carrot slaw, lime dressing","100g",32,1,7,0]],
+ steps:["Shake lime + garlic + salt in a jar; toss with cabbage + carrot + cilantro; let it sit."],
+ tip:"32 calories of pure crunch. Pile it on tacos, bowls, TVP burgers — volume is free here.",
+ full:{y:"makes 15 servings of 100g",ing:["879g (1 head) red cabbage, shredded","190g carrots, shredded","½ bunch cilantro, chopped","68g lime juice (about 2 limes)","10g (2 cloves) garlic, grated","1 tsp salt · ½ tsp black pepper"],
+ dir:["Cabbage, carrot, cilantro in a big bowl.","Shake lime, garlic, salt, pepper in a jar; pour and toss.","Let sit a few hours — the salt softens the cabbage."]}},
+{s:"d",n:"Stuffed parathas",short:"Stuffed parathas",srv:"1 serving = 2 parathas",lvl:0,gf:0,df:1,desi:1,fb:6,tags:["sp","in","cf"],prots:["tf"],ebook:1,kw:"paratha stuffed tofu indian flatbread",
+ comps:[["Chapati-flour dough","2 parathas' worth",204,7,43,1.5],["Spiced shredded tofu filling","56g",70,7,1,4.5]],
+ steps:["Knead, rest, roll; stuff with the spiced tofu; roll thin again.","Hot pan, few minutes a side. Chutney, raita, or ketchup — no judgement."],
+ tip:"Aloo paratha energy, tofu paratha protein. Weigh your parathas — homemade sizes drift.",
+ full:{y:"makes 8 parathas",ing:["dough: 240g chapati flour + 131 mL warm water + 4 mL avocado oil","filling: 227g super-firm tofu, shredded","1½ tsp red chili powder · 1½ tsp amchoor powder","½ tsp turmeric · ½ tsp cumin seeds","¼ tsp hing · 1 tbsp kasoori methi · 1 tsp salt"],
+ dir:["Knead flour + water into a soft dough, oil at the end; rest 15–30 min under a damp towel.","Mix the filling. Divide dough into 8; roll each to a 4-inch circle.","Stuff ~28g filling; fold in thirds so it's hidden; roll as thin as you can without ripping.","Cook both sides a few minutes on a hot pan. Stove oil optional (and logged)."]}},
+{s:"d",n:"Rice & bean stuffed peppers",short:"Rice-bean peppers",srv:"1 serving = 1 stuffed half",lvl:0,gf:1,df:0,fb:9,tags:["mx","sp","cf"],prots:["st","bn"],ebook:1,kw:"stuffed bell peppers rice beans tvp",
+ comps:[["TVP rice & bean filling + pepper + pepper jack","1 half",318,22,35,10]],
+ steps:["Instant Pot the filling; stuff the pepper halves; cheese on top.","Covered, 350°F, 30–40 min."],
+ tip:"Real talk from my kitchen: many nights we just ate the rice & beans and skipped the stuffing step entirely. Allowed.",
+ full:{y:"makes 4–8 stuffed halves",ing:["10 mL avocado oil · 200g onion · 10g garlic · 2 green chilis","200g TVP, hydrated in boiling water 15 min","190g (1 cup) brown basmati rice","144g raw black beans + 66g raw kidney beans (canned + white rice if stovetop)","158g salsa · 308g frozen peas · 221g carrots","2–3 tsp salt · 1 tsp each: pepper, coriander, cumin, turmeric, paprika","3.5 cups vegetable broth","2–4 bell peppers, halved & deseeded","112g pepper jack, shredded"],
+ dir:["Sauté mode: oil, cumin seeds, onion, garlic + chilis, veggies, salsa until it dries a bit, then spices.","Cancel sauté; add broth, salt, rice, raw beans, squeezed TVP.","High pressure 30 min; wait 15 before releasing.","Stuff the halves in an oiled dish; top with cheese; foil; 350°F 30–40 min.","Cilantro, lime, guac on top — logged."]}},
+{s:"d",n:"Loaded nachos night",short:"Nachos",srv:"1 serving = 1 plate",lvl:0,gf:1,df:0,fb:8,tags:["mx","sp","cf"],prots:["st","cc"],ebook:1,kw:"nachos queso quest chips",
+ comps:[["Quest tortilla chips","1 bag",140,19,5,4.5],["Beans + veg + seitan pepperoni","",120,15,14,3],["Pepper jack + queso + guac","",187,11,5,11.5]],
+ steps:["Chips, then toppings, cheese last; microwave 20–30 sec until melted.","Queso + guac on top; everyone customizes their own plate."],
+ tip:"My queso: blend 226g cottage cheese + 1 tbsp taco seasoning, add 56g pepper jack, microwave in 15-sec bursts. Nobody believes it's cottage cheese.",
+ full:{y:"makes 1 loaded plate",ing:["1 bag Quest tortilla chips","20g onion + 20g green bell pepper, chopped","15g black olives, sliced · 2g jalapeño","50g black beans, rinsed","19g seitan pepperoni, quartered","28g pepper jack, shredded","1 serving queso + 1 serving guacamole","optional: lime, cilantro, hot sauce"],
+ dir:["Arrange chips; sprinkle onion, pepper, olives, beans, jalapeño, pepperoni.","Cheese last; microwave 20–30 sec until melted.","Add warm queso + guac + optional toppings. Family nacho bar: everyone builds their own."]}},
+{s:"d",n:"Beef kofta bowls",short:"Beef kofta bowl",srv:"1 serving = 1 bowl",lvl:4,gf:1,df:1,fb:4,tags:["md","sp"],prots:["bf"],swap:0,kw:"beef kofta bowl mediterranean",
+ comps:[["93% lean beef kofta (cumin, garlic, parsley)","120g",170,22,0,9],["Rice","100g",130,3,28,0],["Cucumber-tomato salad","",40,1,6,1],["Tahini drizzle","10g",60,2,2,5]],
+ steps:["Mix beef with grated onion, garlic, cumin, coriander, paprika, parsley; shape into 3 mini logs.","Sear or air-fry ~10 min; build the bowl; drizzle tahini."],
+ tip:"Kofta freezes raw beautifully — shape a double batch, cook from frozen on the busy nights."},
+{s:"d",n:"Sheet-pan steak fajitas",short:"Steak fajitas",srv:"1 serving = 2 fajitas",lvl:4,gf:1,df:1,fb:5,tags:["mx","sp"],prots:["bf"],swap:0,kw:"steak fajitas beef sheet pan",
+ comps:[["Flank steak, sliced against the grain","120g",200,32,0,8],["Peppers + onions, roasted","",50,1,10,0.5],["Corn tortillas","2",120,2,24,2]],
+ steps:["Toss steak strips + peppers + onions in fajita spices and a little oil.","One pan, 425°F, ~12 min; broil 2 min for char. Build at the table."],
+ tip:"Slice against the grain and even budget flank eats tender. Same pan takes paneer or tofu for the mixed-diet table."},
+{s:"s",n:"Proffee frappe",short:"Proffee frappe",srv:"1 serving = 1 tall glass",lvl:0,gf:1,df:0,fb:1,tags:["sw"],prots:["pp"],kw:"proffee protein coffee frappe shake",
+ comps:[["Protein powder","1 scoop",120,20,3,2],["Fairlife milk","120 mL",55,7,3,2],["Cold coffee + ice","1 cup",5,0,0,0]],
+ steps:["Blend cold coffee, powder, milk, and a big handful of ice until frothy.","It's the coffee-shop frappe, minus the 400-calorie syrup bill."],
+ tip:"27g of protein disguised as a treat. Decaf works for the 3pm version."},
+{s:"t",n:"Baked cinnamon donuts",short:"Baked donuts",srv:"1 serving = 1 donut",lvl:1,gf:0,df:0,fb:1,tags:["sw","cf"],prots:["yg"],ebook:1,kw:"donuts baked cinnamon",
+ comps:[["Baked donut","1",97,3.5,14,3]],
+ steps:["Whisk dry, whisk wet, combine gently; pipe into a greased donut pan.","350°F 12–15 min, toothpick-clean."],
+ tip:"No donut pan? Bake as muffins, add a few minutes. Icing goes on the log, not on autopilot.",
+ full:{y:"makes 12 donuts",ing:["120g white whole wheat flour","120 mL skim milk · 75g nonfat vanilla yogurt","26 mL avocado oil · 1 medium egg","77g light brown sugar · 5g vanilla extract","2 tsp cinnamon · 1 tsp baking powder · ½ tsp baking soda · ¼ tsp salt"],
+ dir:["350°F. Mix dry ingredients in one bowl, whisk wet in another.","Gently whisk dry into wet until just combined.","Pour into a GENEROUSLY greased donut pan.","Bake 12–15 min until a toothpick comes out clean."]}},
+{s:"t",n:"Pumpkin pie muffins ×2",short:"Pumpkin muffins",srv:"1 serving = 2 muffins",lvl:1,gf:1,df:0,fb:3,tags:["sw","cf"],prots:["cc","we"],ebook:1,kw:"pumpkin pie muffins",
+ comps:[["Pumpkin-cottage cheese muffins","2",150,8,16,5]],
+ steps:["Blend everything; 12 greased liners; 350°F 10–15 min."],
+ tip:"Pumpkin pie that counts as protein. GF if your oats are certified.",
+ full:{y:"makes 12 muffins",ing:["45g old-fashioned rolled oats","150g nonfat cottage cheese","4 eggs (200g)","204g pumpkin purée","40 mL maple syrup · 2 tsp vanilla extract","1½ tbsp pumpkin pie spice","2 tsp baking powder · ½ tsp salt"],
+ dir:["350°F. Blend ALL ingredients.","Pour evenly into 12 greased muffin liners.","Bake 10–15 min until toothpick-clean. Whipped cream on top gets logged."]}},
+{s:"t",n:"Double-chocolate Kodiak muffins",short:"Choc muffins",srv:"1 serving = 1 muffin",lvl:1,gf:0,df:0,fb:2,tags:["sw","cf"],prots:["yg"],ebook:1,kw:"chocolate muffins kodiak",
+ comps:[["Kodiak double-choc muffin (made with yogurt)","1",150,10,23,2.5]],
+ steps:["Box mix + milk + eggs + Greek yogurt; 375°F 12–15 min."],
+ tip:"My move: eat it warm with a measured scoop of Talenti pistachio. Vanilla yogurt instead of plain adds a touch of sweet.",
+ full:{y:"makes 12 muffins",ing:["1 box Kodiak double chocolate muffin mix","240 mL (1 cup) skim milk","2 eggs (100g)","191g nonfat Greek yogurt"],
+ dir:["375°F. Combine everything.","Grease tins; fill 12 evenly.","Bake 12–15 min; cool 5 (if you can)."]}},
+{s:"t",n:"Strawberry cheesecake custard",short:"Custard",srv:"1 serving = 1 slice (⅛)",lvl:1,gf:1,df:0,fb:0,tags:["sw"],prots:["ew","yg"],ebook:1,kw:"custard egg white yogurt cheesecake",
+ comps:[["Egg-white yogurt custard","1 slice",56,6,8,0]],
+ steps:["Whisk yogurt + egg whites + cornstarch; greased pan; 350°F ~1 hour.","Cool 30 min, then fridge a couple hours. It deflates — that's normal."],
+ tip:"56 calories a slice. The custard tastes like whatever yogurt you use — strawberry cheesecake Light & Fit is the move.",
+ full:{y:"makes 8 slices",ing:["309g egg whites (about 6 eggs' worth)","354g strawberry cheesecake yogurt (Dannon Light 'n Fit)","49g cornstarch"],
+ dir:["350°F. Whisk yogurt + egg whites thoroughly; add cornstarch; mix.","Pour into a greased 9-inch pan.","Bake ~1 hour until the top browns (not burns).","Cool 30 min; fridge a couple hours; out 15 min before serving. Toppings logged."]}},
+{s:"t",n:"Double-choc bean cookies",short:"Bean cookies",srv:"1 serving = 1 cookie",lvl:0,gf:1,df:1,fb:3,tags:["sw","cf"],prots:["bn","nt"],ebook:1,kw:"chocolate cookies kidney beans almond butter vegan",
+ comps:[["Kidney bean-almond butter cookie","1",127,4.5,16,5]],
+ steps:["Flax egg first (let it sit 10 min); blend everything except the chips.","Fold in chips; shape; 350°F 15–18 min. They firm up as they cool."],
+ tip:"Vegan, GF, dairy-free, and made of BEANS — and nobody can tell. Contains almond butter (the avoid box catches nuts). Try not to eat all 12 :)",
+ full:{y:"makes 12 cookies",ing:["1 can (15.5 oz) red kidney beans, rinsed & drained","80g almond butter","60 mL maple syrup · 1 tsp vanilla","5g baking powder · 30g cocoa powder","flax egg: 5g ground flaxseed + 10–15 mL water","40g chocolate chips (+ extra for tops)"],
+ dir:["350°F. Make the flax egg; let it sit ~10 min until slushy.","Blend everything except the chips; fold the chips in.","Scoop 1½ tbsp portions; shape into cookies on parchment.","Bake 15–18 min. They look underdone — they harden as they cool. Sea salt on top if you're fancy."]}},
+{s:"t",n:"Carrot cake muffins",short:"Carrot muffins",srv:"1 serving = 1 muffin",lvl:1,gf:0,df:1,fb:2,tags:["sw","cf"],prots:[],ebook:1,kw:"carrot cake muffins apple",
+ comps:[["Carrot-apple muffin","1",124,3,19,4.5]],
+ steps:["Whisk dry; whisk wet; fold in shredded carrot + apple.","375°F 25–29 min, toothpick-clean."],
+ tip:"Dairy-free carrot cake that my little one requests. The mini food processor shreds the carrot + apple in seconds.",
+ full:{y:"makes 18 muffins",ing:["113g (1 cup) white whole wheat flour + 120g (1 cup) oat flour","3 tsp baking powder · 2 tsp cinnamon · ½ tsp salt","120 mL (½ cup) maple syrup · 60 mL (¼ cup) avocado oil","183g (¾ cup) pumpkin purée · 3 eggs","244g (2 cups) raw carrot, grated · 1 apple, shredded"],
+ dir:["375°F. Whisk flours, baking powder, cinnamon, salt.","Separately whisk maple, oil, pumpkin, eggs.","Combine; gently fold in carrot + apple.","Fill muffin tins; bake 25–29 min until golden and toothpick-clean.","Icing or whipped cream if it's not sweet enough — logged."]}},
 ];
 MEALS.forEach((m,i)=>{m.id=i;});
 /* effort levels: 0 no-cook/assemble · 1 quick (≈15 min) · 2 cooking night */
-const EFF0=new Set(["Yogurt bowl","Protein bagel","Quest chips","Cheese + apple","CC + pineapple","Yogurt + honey","Hummus + veg","PB rice cakes","Boiled eggs","Edamame","Asian slaw","Protein shake","Chana + chai","Talenti scoop","Tate's ×2","Chocolate + chai","Mango dahi","Leftovers","Chicken bowl","Overnight oats","Mug pancake","Cottage dip plate"]);
-const EFF2=new Set(["Dhal + rice","CC pasta bake","Stuffed peppers","Lentil soup","Chicken lentil soup","Broccoli potato soup","Thepla","Korean pancakes","Buffalo casserole","Lasagna bake","Enchiladas","Palak paneer","Chana masala","Khichdi","Pea stew","TVP bolognese","Beef chili","Chili","TVP taco soup","TVP burgers","Oat CC muffins","Lemon CC bars","Yogurt cake","CC doughnut holes","Paneer pinwheels","Egg bites"]);
+const EFF0=new Set(["Yogurt bowl","Hero bagel","Quest chips","Cheese + apple","CC + pineapple","Yogurt + honey","Hummus + veg","PB rice cakes","Boiled eggs","Edamame","Asian slaw","Protein shake","Chana + chai","Talenti scoop","Tate's ×2","Chocolate + chai","Mango dahi","Leftovers","Chicken bowl","Overnight oats","Mug pancake","Cottage dip plate","Avocado toast","Quesadilla","Nachos","Lime slaw","Proffee frappe"]);
+const EFF2=new Set(["Dhal + rice","CC pasta bake","Stuffed peppers","Lentil soup","Chicken lentil soup","Broccoli potato soup","Thepla","Korean pancakes","Buffalo casserole","Lasagna bake","Enchiladas","Palak paneer","Chana masala","Khichdi","Pea stew","TVP bolognese","Beef chili","Chili","TVP taco soup","TVP burgers","Oat CC muffins","Lemon CC bars","Yogurt cake","CC doughnut holes","Paneer pinwheels","Egg bites","Egg strata","Savory waffles","Grilled cheese + soup","Chickpea soup","Stuffed parathas","Rice-bean peppers","Baked donuts","Pumpkin muffins","Custard","Bean cookies","Carrot muffins"]);
 MEALS.forEach(m=>{m.eff=EFF0.has(m.short)?0:EFF2.has(m.short)?2:1;});
 const byId=i=>MEALS.find(m=>m.id===i);
 function slotOK(m,sk){return m.out?(sk==="l"||sk==="d"):m.s===sk;}
@@ -828,7 +997,7 @@ const GROC=[
   costco:[["Kodiak pancake mix","3Wc9Ylh"],["Dave's Killer bread","4buxy17"],["Microwave rice packs"],["Sweet potatoes"]],
   tj:[["Chickpea penne"],["Frozen brown rice"],["Sprouted wheat bread"],["Corn tortillas"]],
   aldi:[["Whole-grain bread"],["Rice & oats (best prices around)"],["Protein pasta"],["Potatoes"]],
-  walmart:[["Nature's Own keto bread","3LgqA4W"],["The Better Bagel","3Lf38VW"],["Kodiak frozen waffles","4eMMham"],["Rice cakes"]],
+  walmart:[["Nature's Own keto bread","3LgqA4W"],["Hero bagels (19g protein · 21g fiber)","https://www.amazon.com/dp/B0FBLVB6JZ?tag=macrofriend04-20"],["Kodiak frozen waffles","4eMMham"],["Rice cakes"]],
   giant:[["Dave's thin-sliced bread","4buxy17"],["Joseph's lavash wraps","3VXk8VH"],["Joseph's pita","3VUYhxV"],["Oats"]],
   wf:[["Chickapea pasta","3zquSnF"],["Sourdough"],["Corn tortillas"],["Sweet potatoes"]],
   indian:[["Golden Temple chapati flour","4eX1Z2X"],["Basmati rice"],["Dosa batter (fresh tub)"],["Idli rava"]]}],
@@ -929,7 +1098,7 @@ const TOOLS=[
   ["Fairlife milk","13g protein per cup. The latte upgrade.","3VVpwZ7"],
   ["Kodiak pancake mix","Waffles, pancakes, muffins — one box.","3Wc9Ylh"],
   ["Chickpea pasta","11g protein per serving before the sauce shows up.","3zquSnF"],
-  ["The Better Bagel","A bagel with 26g protein. Witchcraft.","3Lf38VW"]]],
+  ["Hero bagels","19g protein and 21g fiber in a bagel. Witchcraft.","https://www.amazon.com/dp/B0FBLVB6JZ?tag=macrofriend04-20"]]],
 ];
 
 /* ---------- state ---------- */
@@ -1329,7 +1498,10 @@ function bankCard(m){
     <tr class="tot"><td>1 serving</td><td></td><td>${t.cal}</td><td>${t.p}</td><td>${t.c}</td><td>${t.f}</td></tr></tbody></table></div>
     ${(m.custom||m.drink||m.out)?"":`<p class="aff" style="margin:2px 0 0;">+ ~${m.fb}g fiber · spices, herbs, extracts & leaveners are free — this is a blueprint, not scripture. Season like it's YOUR kitchen (it is).</p>`}`;
   const steps=(m.steps&&!m.custom)?`<div class="how"><b>How it comes together</b><ol>${m.steps.map(st=>`<li>${esc(st)}</li>`).join("")}</ol></div>`:"";
-  const ebk=m.ebook?`<div class="ebk">Want my exact recipe + spices? It's in <a href="${EBOOK}" target="_blank" rel="noopener">the Mindful Macros Meal Plan</a>.</div>`:"";
+  const fullr=m.full?`<details class="fullr"><summary>My full recipe · ${esc(m.full.y)}</summary>
+    <div class="how"><b>Everything you need</b><ul class="fing">${m.full.ing.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+    <b>Step by step</b><ol>${m.full.dir.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div></details>`:"";
+  const cred=m.cred?`<div class="aff" style="margin-top:5px;">adapted with love from <a href="${m.cred[1]}" target="_blank" rel="noopener">${esc(m.cred[0])}&nbsp;&nearr;</a></div>`:"";
   const mf=m.free?"":(m.drink
     ?`<div class="mf">📲 Every tracker knows "wine" — log the real pour, not the wishful one.</div>`
     :(m.custom
@@ -1342,7 +1514,7 @@ function bankCard(m){
     <button class="xbtn" data-id="${m.id}" aria-label="Never show ${esc(m.short)}">✕</button>
     <div>${chips}</div><div class="nm">${esc(m.n)}</div><div class="srv">${esc(m.srv)}</div>
     ${m.free?'<div class="mac">same macros as last night — already tracked once</div>':(m.out?`<div class="mac">est ~${t.cal} cal · <b>~${t.p}g P</b> — your actual order decides</div>`:`<div class="mac">${t.cal} cal · <b>${t.p}g P</b> · ${t.c}g C · ${t.f}g F${m.custom?"":" · "+m.fb+"g fiber"}</div><span class="portion">your portion: ${portion(m,m.s)} serving${portion(m,m.s)==="×1"?"":"s"}</span>`)}
-    <div class="tip">${esc(m.tip)}</div>${grabLine(m)}${swapOptions(m)}${steps}${comps}${mf}${ebk}${add}</div>`;
+    <div class="tip">${esc(m.tip)}</div>${cred}${grabLine(m)}${swapOptions(m)}${steps}${fullr}${comps}${mf}${add}</div>`;
 }
 function renderBank(){
   const [lo,hi]=TIERS[S.tier],mid=(lo+hi)/2;
@@ -1372,7 +1544,7 @@ function renderBank(){
   if(S.alc!=="no"){
     const DR=MEALS.filter(m=>m.drink&&eligible(m));
     h+=`<div class="bankslot" id="bank-dr"><h3>Drinks <span class="budget">7 cal per gram of alcohol — the 4th macronutrient</span></h3>
-    <p class="hint">Straight from the course: alcohol has calories and they count — usually tracked as carbs or fat. Drinks are never auto-scheduled; YOU place them, on a treat slot, logged FIRST like any treat. The full calorie cheat sheet is in House Rules.</p>
+    <p class="hint">Alcohol is the sneaky 4th macronutrient — its calories count, usually tracked as carbs or fat. Drinks are never auto-scheduled; YOU place them, on a treat slot, logged FIRST like any treat. The full calorie cheat sheet is in House Rules.</p>
     <div class="meals">${DR.map(bankCard).join("")}</div></div>`;
   }
   const OUT=MEALS.filter(m=>m.out&&eligible(m));
@@ -1423,7 +1595,7 @@ function renderGrocery(){
   const chips=[...S.stores].map(st=>`<span class="chip store" style="font-size:13px;">${STORES.find(x=>x[0]===st)[1]}</span>`).join(" ")
     +(S.myStore?` <span class="chip store" style="font-size:13px;">${esc(S.myStore)}</span>`:"");
   let g=`<h2>Grocery list</h2><div style="margin:2px 0 8px;">${chips}</div>
-  <p class="sub">Shop by <b>category</b> — brands are just examples I use and love. Any product in the category works; read the label like the course taught you and you literally cannot get this wrong. The list already matches how you eat — no meat aisle for the vegetarians, promise.</p>`;
+  <p class="sub">Shop by <b>category</b> — brands are just examples I use and love. Any product in the category works; read the label, check the protein per serving, and you literally cannot get this wrong. The list already matches how you eat — no meat aisle for the vegetarians, promise.</p>`;
   GROC.forEach(([cat,byStore])=>{
     const rows=[];
     [...S.stores].forEach(st=>{(byStore[st]||[]).forEach(it=>{
@@ -1443,7 +1615,7 @@ function renderOut(){
   let o=`<h2>The eating-out playbook</h2>
   <p class="sub">The universal formula, any restaurant on earth: <b>① Find your protein anchor first. ② Pick ONE starchy thing and portion it. ③ Fill the rest with veg volume. ④ If there's a treat, it's logged first and eaten slowest.</b> Look at the menu before you go and pre-log — future you says thanks.</p>`;
   RESTS.forEach(([n,order,mac])=>{o+=`<div class="rest"><h4>${n}</h4><p class="order">${esc(order)}</p><p class="pnum">${mac}</p></div>`;});
-  o+=`<div class="callout"><b>Someone's aunty is loading your plate?</b> "I'm not on a diet — I'm being intentional." Full scripts are in the course, Advanced Topics.</div>`;
+  o+=`<div class="callout"><b>Someone's aunty is loading your plate?</b> Scripts that work: "I'm not on a diet — I'm being intentional." · "Let me pack some to take home, I can't eat it right now." · "Thanks for worrying about my health — how's yours doing?" Say it warm, smile, change the subject.</div>`;
   $("tab-out").innerHTML=o;
 }
 function renderFamily(){
@@ -1477,7 +1649,7 @@ function renderFamily(){
 }
 function renderTools(){
   let t=`<h2>Tools that might help</h2>
-  <p class="sub">None of these are required — the course runs on a kitchen scale and a free app. But these are the things in MY kitchen that make hitting protein feel automatic.</p>`;
+  <p class="sub">None of these are required — all this truly needs is a kitchen scale and a free tracking app. But these are the things in MY kitchen that make hitting protein feel automatic.</p>`;
   TOOLS.forEach(([group,items])=>{
     t+=`<div class="bankslot"><h3>${group}</h3><div class="toolgrid">${items.map(([n,d,aid])=>
       `<div class="tool"><b>${esc(n)}</b><p>${esc(d)}</p><a class="aff" href="${A(aid)}" target="_blank" rel="noopener">see my pick&nbsp;&nearr;</a></div>`).join("")}</div></div>`;});
@@ -1500,7 +1672,7 @@ function renderRules(){
   <div class="callout"><b>When to get my eyes on it:</b> two full weeks where the scale, measurements, clothes, AND photos all flatline = a real plateau. Don't guess at levers — that's a <a href="https://roaspy.coachnehanautiyal.com/righttrackreviewcall" target="_blank" rel="noopener">Right-Track Review</a> conversation.</div>`
   +(S.alc!=="no"?`
   <h2 style="margin-top:26px;">Alcohol math (because pretending it doesn't count never worked)</h2>
-  <p class="sub">From the course: alcohol is the 4th macronutrient — <b>7 calories per gram</b>, usually tracked as carbs or fat. It counts toward your day like anything else. The rules that keep it from eating your deficit: <b>log the drink FIRST</b> (treat rules), watch the mixer (that's where cocktails go sideways), pour at home so you see the ounces, and alternate with water.</p>
+  <p class="sub">Alcohol is the 4th macronutrient nobody puts on the label math — <b>7 calories per gram</b>, usually tracked as carbs or fat. It counts toward your day like anything else. The rules that keep it from eating your deficit: <b>log the drink FIRST</b> (treat rules), watch the mixer (that's where cocktails go sideways), pour at home so you see the ounces, and alternate with water.</p>
   <div class="scroller"><table><thead><tr><th>Drink</th><th>Serving</th><th>~Calories</th></tr></thead><tbody>
   <tr><td>Champagne / prosecco</td><td class="pnum">4 oz</td><td class="pnum">90</td></tr>
   <tr><td>White wine</td><td class="pnum">5 oz</td><td class="pnum">120</td></tr>
