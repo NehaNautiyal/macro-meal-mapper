@@ -113,6 +113,9 @@
   .cell .cn{font-weight:700;display:block;}
   .cell .cm{color:var(--ink-soft);font-variant-numeric:tabular-nums;display:block;margin-top:2px;}
   .cell .cm b{color:var(--good);}
+  .cell .prep{display:block;margin-top:3px;font-size:10.5px;font-weight:700;letter-spacing:.03em;
+    color:var(--accent-ink);text-transform:uppercase;}
+  .cell.carried{background:linear-gradient(180deg,var(--sel) 0 3px,var(--card) 3px);}
   .cell.sel{background:var(--sel);border-color:var(--accent);border-width:2px;}
   .cell.over{border-color:var(--accent);border-style:dashed;border-width:2px;}
   .cell.empty{display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
@@ -128,6 +131,9 @@
   .xbtn{position:absolute;top:3px;right:3px;border:0;background:transparent;color:var(--ink-soft);
     font-size:13px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px;font-family:inherit;}
   .xbtn:hover{background:var(--soft-bg);color:var(--spice);}
+  .dupbtn{position:absolute;top:22px;right:3px;border:0;background:transparent;color:var(--ink-soft);
+    font-size:12px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px;font-family:inherit;}
+  .dupbtn:hover{background:var(--soft-bg);color:var(--accent-ink);}
   .plannerhint{font-size:13px;color:var(--ink-soft);margin:8px 0 2px;}
   .placebar{position:sticky;bottom:10px;background:var(--deep);color:#fff;border-radius:999px;
     padding:10px 20px;font-size:14px;font-weight:600;display:none;z-index:5;box-shadow:var(--shadow);}
@@ -369,6 +375,8 @@
     <legend>How much kitchen time on a weeknight?</legend>
     <div class="pills" id="pacePills"></div>
     <p class="hint">Weeknights get filled to match; weekends stay wide open. Every meal card shows its effort level, so nothing sneaks up on you.</p>
+    <label class="sw" style="margin-top:10px;"><input type="checkbox" id="prepSw" checked> <b>Cook once, eat twice</b> — last night's dinner becomes tomorrow's lunch</label>
+    <p class="hint">This is how I actually feed my family: 4 cook sessions a week instead of 35. Fewer dishes, fewer groceries, zero "what's for lunch" panic. Uncheck if you'd rather have something different at every meal.</p>
   </fieldset>
 
   <fieldset>
@@ -404,7 +412,7 @@
     <div class="wkbtns" id="wkbtns"></div>
     <div class="gridwrap"><table class="grid" id="grid"></table></div>
     <div class="weektot" id="weektot"></div>
-    <div class="plannerhint"><b>Tap a meal</b> to see its full card below · <b>drag</b> meals to move or swap them (desktop) · <b>✕</b> replaces or retires a meal · day totals use your auto-portions · everything saves on this device automatically.</div>
+    <div class="plannerhint"><b>Tap a meal</b> for its full card · <b>drag</b> to swap any two cells — any slot, any day (breakfast-for-dinner is allowed, encouraged even) · <b>⧉</b> copies a meal to another day, so one pot can cover three · <b>✕</b> replaces or retires it · <b>↻</b> means it's already in your fridge · day totals use your auto-portions · everything saves automatically.</div>
     <div class="btnrow" style="justify-content:flex-start;">
       <button class="btn small ghost" id="shuffleBtn">Shuffle this week</button>
       <button class="btn small ghost" onclick="window.print()">Print / save as PDF</button>
@@ -984,7 +992,6 @@ const EFF0=new Set(["Yogurt bowl","Hero bagel","Quest chips","Cheese + apple","C
 const EFF2=new Set(["Dhal + rice","CC pasta bake","Stuffed peppers","Lentil soup","Chicken lentil soup","Broccoli potato soup","Thepla","Korean pancakes","Buffalo casserole","Lasagna bake","Enchiladas","Palak paneer","Chana masala","Khichdi","Pea stew","TVP bolognese","Beef chili","Chili","TVP taco soup","TVP burgers","Oat CC muffins","Lemon CC bars","Yogurt cake","CC doughnut holes","Paneer pinwheels","Egg bites","Egg strata","Savory waffles","Grilled cheese + soup","Chickpea soup","Stuffed parathas","Rice-bean peppers","Baked donuts","Pumpkin muffins","Custard","Bean cookies","Carrot muffins"]);
 MEALS.forEach(m=>{m.eff=EFF0.has(m.short)?0:EFF2.has(m.short)?2:1;});
 const byId=i=>MEALS.find(m=>m.id===i);
-function slotOK(m,sk){return m.out?(sk==="l"||sk==="d"):m.s===sk;}
 
 /* grocery: category → per-store example (label, affiliate id?) */
 const GROC=[
@@ -1106,7 +1113,7 @@ const TOOLS=[
 
 /* ---------- state ---------- */
 const S={tier:null,protein:null,carbs:null,fat:null,phase:null,diet:null,gf:false,df:false,
- loves:new Set(),prots:new Set(),otherProt:"",avoid:"",stores:new Set(),myStore:"",fam:null,out:null,alc:"no",pace:"quick",mode:"auto"};
+ loves:new Set(),prots:new Set(),otherProt:"",avoid:"",stores:new Set(),myStore:"",fam:null,out:null,alc:"no",pace:"quick",prep:true,mode:"auto"};
 const $=id=>document.getElementById(id);
 let plan=null, curWeek=0, placing=null, pendingCell=null, blocklist=new Set(), swapSel={}, CUSTOM=[];
 
@@ -1135,7 +1142,7 @@ function restoreState(sv){
   curWeek=sv.week||0;
   /* rebuild inputs + pills so "change my answers" works */
   $("protein").value=S.protein||"";$("carbs").value=S.carbs||"";$("fat").value=S.fat||"";
-  $("gf").checked=S.gf;$("df").checked=S.df;$("avoid").value=S.avoid||"";$("otherProt").value=S.otherProt||"";$("myStore").value=S.myStore||"";
+  $("gf").checked=S.gf;$("df").checked=S.df;$("avoid").value=S.avoid||"";$("otherProt").value=S.otherProt||"";$("myStore").value=S.myStore||"";$("prepSw").checked=S.prep!==false;
   pills($("calPills"),TIERS.map((t,i)=>[i,t]),"tier",false,d=>`${d[1][0].toLocaleString()}–${d[1][1].toLocaleString()} cal`);
   pills($("phasePills"),PHASES,"phase",false);
   pills($("dietPills"),DIETS,"diet",false);
@@ -1223,6 +1230,7 @@ $("to3").onclick=()=>{
   if(!S.diet||(!S.stores.size&&!S.myStore)||!S.fam||!S.out){$("err2").style.display="block";return;}
   $("err2").style.display="none";
   S.gf=$("gf").checked;S.df=$("df").checked;S.avoid=$("avoid").value;S.otherProt=$("otherProt").value;
+  S.prep=$("prepSw").checked;
   if(!S.pace)S.pace="quick";if(!S.mode)S.mode="auto";
   plan=null;render();show(3);saveState();
 };
@@ -1292,30 +1300,88 @@ function score(m){
 function slotList(s){return MEALS.filter(m=>m.s===s&&!m.out&&!m.drink&&eligible(m)).sort((a,b)=>score(b)-score(a));}
 
 /* ---------- plan ---------- */
-function buildPlan(){
-  plan=[];
+/* Build the month the way a real kitchen works: a few cook sessions, leftovers carried
+   forward, breakfasts batched. Cook once, eat twice — not 35 separate meals a week. */
+function buildWeek(seed){
   const paceLvl=PACELVL[S.pace||"cook"];
-  for(let w=0;w<4;w++){
-    const wk={};
-    SLOTS.forEach(([sk])=>{
-      if(S.mode==="self"){wk[sk]=DAYS.map(()=>null);return;}
-      const L=slotList(sk).filter(m=>!m.free);
-      wk[sk]=DAYS.map((_,d)=>{
-        if(!L.length)return null;
-        const pool=(d<5)?(L.filter(m=>m.eff<=paceLvl).length>1?L.filter(m=>m.eff<=paceLvl):L):L;
-        const k=Math.min(pool.length,2+w);
-        return pool[(d+w)%k].id;
-      });
+  const prep=S.prep!==false;
+  const pick=(list,i)=>list.length?list[i%list.length].id:null;
+  {
+    const w=seed;
+    const wk={b:[],l:[],s:[],d:[],t:[]};
+    if(S.mode==="self"){SLOTS.forEach(([sk])=>wk[sk]=DAYS.map(()=>null));return wk;}
+
+    /* 1. Reserve eating-out nights FIRST so the cooking plan builds around real life */
+    const outD=new Set(),outL=new Set();
+    if(S.out==="some")outD.add(5);
+    else if(S.out==="lots"){outD.add(4);outD.add(5);outL.add(6);}
+
+    /* 2. Dinners drive the week. Pick a handful of dishes; each cook session feeds
+          two nights (or tomorrow's lunch). Weeknights respect her kitchen-time answer;
+          weekends get the bigger cooks. */
+    const D=slotList("d").filter(m=>!m.free);
+    const Dquick=D.filter(m=>m.eff<=paceLvl);
+    const weekPool=(Dquick.length>=3?Dquick:D);
+    /* spread the picks across the whole pool so one week isn't four variations of tofu */
+    const stride=Math.max(1,Math.floor(weekPool.length/4));
+    const cooks=[pick(weekPool,w),pick(weekPool,w+stride),pick(weekPool,w+2*stride),pick(D,w+3*stride)];
+    /* Mon–Sun: cook Mon, repeat Tue · cook Wed, repeat Thu · cook Fri · cook Sun (big one) */
+    const dinnerPattern=prep?[0,0,1,1,2,2,3]:[0,1,2,3,0,1,2];
+    wk.d=DAYS.map((_,d)=>outD.has(d)?900:cooks[dinnerPattern[d]%cooks.length]);
+
+    /* 3. Lunches: leftovers from last night on most days, something fresh on the rest */
+    const L=slotList("l").filter(m=>!m.free);
+    const Lstride=Math.max(1,Math.floor(L.length/4));
+    const leftoverDays=new Set([1,3,4,6]); // Tue, Thu, Fri, Sun
+    let fresh=0;
+    wk.l=DAYS.map((_,d)=>{
+      if(outL.has(d))return 900;
+      if(prep&&d>0&&leftoverDays.has(d)){
+        const lastNight=wk.d[d-1];
+        if(lastNight!=null&&lastNight!==900)return lastNight; // cook once, eat twice
+      }
+      return pick(L,w+(fresh++)*Lstride);
     });
-    plan.push(wk);
+
+    /* 4. Breakfasts batch hard — make a tray Sunday, eat it all week */
+    const B=slotList("b").filter(m=>!m.free);
+    const bA=pick(B,w),bB=pick(B,w+Math.max(2,Math.floor(B.length/2)));
+    wk.b=[bA,bA,bB,bA,bA,bB,bB];
+
+    /* 5. Snacks & treats: two of each, alternating (one shopping trip covers both) */
+    const Sn=slotList("s").filter(m=>!m.free),T=slotList("t").filter(m=>!m.free);
+    const sA=pick(Sn,w),sB=pick(Sn,w+Math.max(2,Math.floor(Sn.length/2))),
+          tA=pick(T,w),tB=pick(T,w+Math.max(2,Math.floor(T.length/2)));
+    wk.s=DAYS.map((_,d)=>d%2?sB:sA);
+    wk.t=DAYS.map((_,d)=>d%2?tB:tA);
+
+    return wk;
   }
-  /* schedule eating-out slots from their answer (generic card id 900; swap in favorites from the bank) */
-  if(S.mode!=="self"){
-    for(let w=0;w<4;w++){
-      if(S.out==="some"){plan[w].d[5]=900;}
-      else if(S.out==="lots"){plan[w].d[4]=900;plan[w].d[5]=900;plan[w].l[6]=900;}
-    }
-  }
+}
+function buildPlan(){plan=[];for(let w=0;w<4;w++)plan.push(buildWeek(w));}
+/* a cell is "carried forward" if the same dish was cooked the night before */
+function isLeftover(w,sk,d){
+  if(sk!=="l"||d<1)return false;
+  const id=plan[w].l[d];
+  return id!=null&&id!==900&&id===plan[w].d[d-1];
+}
+function isBatchNight(w,sk,d){
+  if(sk!=="d"||d<1)return false;
+  const id=plan[w].d[d];
+  return id!=null&&id!==900&&id===plan[w].d[d-1];
+}
+/* how many times she actually cooks this week */
+function cookSessions(w){
+  let n=0;
+  DAYS.forEach((_,d)=>{
+    const id=plan[w].d[d];
+    if(id==null||id===900)return;
+    const m=byId(id);
+    if(m&&(m.eff===0))return;              // assembled, not cooked
+    if(d>0&&plan[w].d[d-1]===id)return;    // same pot as last night
+    n++;
+  });
+  return n;
 }
 function portionNum(m,sk){
   if(m.free||m.out||m.drink)return 1;
@@ -1364,8 +1430,10 @@ function renderBand(){
   if(terms(S.avoid).length)guard+=` <b>Filtered out for you:</b> ${esc(terms(S.avoid).join(", "))}.`;
   $("guardrails").innerHTML=guard;
   $("plannerSub").innerHTML=S.mode==="self"
-   ?"Your blank canvas. <b>Tap any empty day</b> and pick from the bank below — or drag cards up on desktop. Build one week and copy your winners into the rest."
-   :"Four weeks, auto-filled from your answers — weeknights match your kitchen-time pick, weekends roam free. <b>Tap a meal to see its full card</b>, drag to rearrange, ✕ to replace. Week 1 repeats meals on purpose — boring is data.";
+   ?"Your blank canvas. <b>Tap any empty day</b> and pick from the bank below — or drag cards up on desktop. Build one week and use ⧉ to copy your winners across the rest."
+   :(S.prep!==false
+     ?"Four weeks, built the way a real kitchen runs: <b>a few cook sessions, then leftovers carried forward.</b> Cook Monday, eat it Tuesday for lunch. Batch a breakfast tray on Sunday, coast till Thursday. Anything marked <b>↻</b> is food you already made — that's the point, not a bug. Tap a meal for its card, drag anything anywhere, ✕ to replace."
+     :"Four weeks, auto-filled from your answers — weeknights match your kitchen-time pick, weekends roam free. <b>Tap a meal to see its full card</b>, drag to rearrange, ✕ to replace.");
 }
 function renderGrid(){
   const [lo,hi]=TIERS[S.tier],mid=(lo+hi)/2;
@@ -1383,9 +1451,11 @@ function renderGrid(){
       if(id==null||!byId(id)){h+=`<td class="cellwrap"><div class="cell empty" tabindex="0" role="button" data-s="${sk}" data-d="${d}" aria-label="Pick a ${label.toLowerCase()} for ${DAYS[d]}">+ pick</div></td>`;return;}
       const m=byId(id),t=tot(m);
       const cm=m.out?`est ~${t.cal} cal · <b>~${t.p}g</b>`:`${portion(m,sk)} · ${t.cal} cal · <b>${t.p}g</b>`;
-      h+=`<td class="cellwrap"><div class="cell" draggable="true" tabindex="0" role="button" data-s="${sk}" data-d="${d}"
-        aria-label="${esc(m.n)} on ${DAYS[d]} — tap for details"><button class="xbtn" data-s="${sk}" data-d="${d}" aria-label="Remove ${esc(m.short)}">✕</button><span class="cn">${esc(m.short)}</span>
-        <span class="cm">${cm}</span></div></td>`;
+      const carried=isLeftover(curWeek,sk,d),batch=isBatchNight(curWeek,sk,d);
+      const prepNote=carried?'<span class="prep">↻ from last night</span>':(batch?'<span class="prep">↻ same pot, night 2</span>':"");
+      h+=`<td class="cellwrap"><div class="cell${(carried||batch)?" carried":""}" draggable="true" tabindex="0" role="button" data-s="${sk}" data-d="${d}"
+        aria-label="${esc(m.n)} on ${DAYS[d]} — tap for details"><button class="xbtn" data-s="${sk}" data-d="${d}" aria-label="Remove ${esc(m.short)}">✕</button><button class="dupbtn" data-id="${id}" aria-label="Copy ${esc(m.short)} to another day">⧉</button><span class="cn">${esc(m.short)}</span>
+        <span class="cm">${cm}</span>${prepNote}</div></td>`;
     });
     h+="</tr>";
   });
@@ -1403,24 +1473,31 @@ function renderGrid(){
   $("weektot").innerHTML=days?`<span><b>Week ${curWeek+1} totals:</b></span>
     <span>${W.cal.toLocaleString()} cal</span><span><b>${W.p.toLocaleString()}g protein</b></span>
     <span>${W.c.toLocaleString()}g carbs</span><span>${W.f.toLocaleString()}g fat</span>
-    <span style="color:var(--ink-soft);">daily avg ${Math.round(W.cal/days).toLocaleString()} cal · ${Math.round(W.p/days)}g P${S.out!=="rare"?" · eating-out days will differ, that's fine":""}</span>`
+    <span style="color:var(--ink-soft);">daily avg ${Math.round(W.cal/days).toLocaleString()} cal · ${Math.round(W.p/days)}g P${S.out!=="rare"?" · eating-out days will differ, that's fine":""}</span>
+    <span style="color:var(--accent-ink);font-weight:700;">🍲 ${cookSessions(curWeek)} cook sessions all week</span>`
    :`<span>Nothing planned yet — tap a "+ pick" cell to start building.</span>`;
   document.querySelectorAll("#grid .xbtn").forEach(x=>{
     x.addEventListener("click",e=>{e.stopPropagation();cellX(x.dataset.s,+x.dataset.d);});
+  });
+  document.querySelectorAll("#grid .dupbtn").forEach(x=>{
+    x.addEventListener("click",e=>{
+      e.stopPropagation();clearModes();
+      placing=+x.dataset.id;
+      const pb=bar(`Tap any cell to place a copy of <b>${esc(byId(placing).short)}</b> — same week or flip to another `);
+      const b=document.createElement("button");b.textContent="cancel";b.onclick=clearModes;pb.appendChild(b);
+    });
   });
   document.querySelectorAll("#grid .cell").forEach(c=>{
     const sk=c.dataset.s,d=+c.dataset.d;
     c.addEventListener("click",e=>{
       if(e.target.classList.contains("xbtn"))return;
       if(placing!=null){
-        const m=byId(placing);
-        if(!slotOK(m,sk)){flashHint(m.out?`Restaurant meals go on a lunch or dinner cell.`:`${m.short} is a ${slotName(m.s)} — tap a ${slotName(m.s)} cell.`);return;}
         plan[curWeek][sk][d]=placing;clearModes();renderGrid();return;
       }
       const id=plan[curWeek][sk][d];
       if(id==null){
         clearModes();pendingCell={s:sk,d:d};
-        bar(`Pick a ${slotName(sk)} below for ${DAYS[d]} `);
+        bar(`Pick any meal below for ${DAYS[d]} ${slotName(sk)} — the ${slotName(sk)} section is a good start, but anything goes `);
         const b=document.createElement("button");b.textContent="cancel";b.onclick=clearModes;$("placebar").appendChild(b);
         const sec=$("bank-"+sk);if(sec)sec.scrollIntoView({behavior:"smooth"});
         return;
@@ -1438,10 +1515,12 @@ function renderGrid(){
 }
 function slotName(sk){return SLOTS.find(x=>x[0]===sk)[1].toLowerCase();}
 function dropOn(src,sk,d){
-  if(src.type==="bank"){const m=byId(src.id);if(!slotOK(m,sk))return flashHint(m.out?`Restaurant meals go on a lunch or dinner cell.`:`${m.short} is a ${slotName(m.s)} — drop it on the ${slotName(m.s)} row.`);
-    plan[curWeek][sk][d]=src.id;}
-  else if(src.type==="cell"){if(src.s!==sk)return flashHint("Swap within the same row — breakfasts trade with breakfasts.");
-    const tmp=plan[curWeek][sk][d];plan[curWeek][sk][d]=plan[curWeek][src.s][src.d];plan[curWeek][src.s][src.d]=tmp;}
+  if(src.type==="bank"){plan[curWeek][sk][d]=src.id;}
+  else if(src.type==="cell"){
+    const tmp=plan[curWeek][sk][d];
+    plan[curWeek][sk][d]=plan[curWeek][src.s][src.d];
+    plan[curWeek][src.s][src.d]=tmp;
+  }
   renderGrid();
 }
 function gotoCard(id){
@@ -1479,14 +1558,15 @@ function neverAgain(id){
   pb.appendChild(u);setTimeout(()=>{if(!placing&&!pendingCell)hideBar();},6000);
 }
 $("shuffleBtn").onclick=()=>{
+  /* reshuffle the week but keep the cook-once-eat-twice structure intact */
+  const fresh=buildWeek(4+Math.floor(Math.random()*40));
   SLOTS.forEach(([sk])=>{
-    const L=slotList(sk).filter(m=>!m.free);if(!L.length)return;
-    plan[curWeek][sk]=plan[curWeek][sk].map(cur=>{
-      const curM=cur!=null?byId(cur):null;
-      if(curM&&curM.out)return cur; // restaurant nights stay put
-      return L[Math.floor(Math.random()*Math.min(L.length,5+curWeek))].id;
+    plan[curWeek][sk]=fresh[sk].map((id,d)=>{
+      const cur=plan[curWeek][sk][d],curM=cur!=null?byId(cur):null;
+      return (curM&&curM.out)?cur:id;   // restaurant plans stay where she put them
     });
-  });renderGrid();
+  });
+  renderGrid();
 };
 function grabLine(m){
   if(!m.brands)return"";
@@ -1562,7 +1642,7 @@ function renderBank(){
   if(S.alc!=="no"){
     const DR=MEALS.filter(m=>m.drink&&eligible(m));
     h+=`<div class="bankslot" id="bank-dr"><h3>Drinks <span class="budget">7 cal per gram of alcohol — the 4th macronutrient</span></h3>
-    <p class="hint">Alcohol is the sneaky 4th macronutrient — its calories count, usually tracked as carbs or fat. Drinks are never auto-scheduled; YOU place them, on a treat slot, logged FIRST like any treat. The full calorie cheat sheet is in House Rules.</p>
+    <p class="hint">Alcohol is the sneaky 4th macronutrient — its calories count, usually tracked as carbs or fat. Drinks are never auto-scheduled; YOU place them wherever they actually happen, logged FIRST like any treat. The full calorie cheat sheet is in House Rules.</p>
     <div class="meals">${DR.map(bankCard).join("")}</div></div>`;
   }
   const OUT=MEALS.filter(m=>m.out&&eligible(m));
@@ -1584,13 +1664,13 @@ function renderBank(){
     btn.addEventListener("click",e=>{
       e.stopPropagation();
       const id=+btn.dataset.id,m=byId(id);
-      if(pendingCell&&slotOK(m,pendingCell.s)){
+      if(pendingCell){
         plan[curWeek][pendingCell.s][pendingCell.d]=id;clearModes();renderGrid();
         $("grid").scrollIntoView({behavior:"smooth"});return;
       }
       clearModes();placing=id;
       document.getElementById("card-"+id).classList.add("sel");
-      bar(`Tap a ${slotName(m.s)} day on the calendar for <b>${esc(m.short)}</b> `);
+      bar(`Tap ANY cell on the calendar for <b>${esc(m.short)}</b> — any slot, any day `);
       const b=document.createElement("button");b.textContent="cancel";b.onclick=clearModes;$("placebar").appendChild(b);
       $("grid").scrollIntoView({behavior:"smooth"});
     });
@@ -1648,6 +1728,7 @@ function renderFamily(){
    <li><b>The carb lever is your secret:</b> the difference between your cut plate and the family plate is usually just the size of the starch scoop.</li>
    <li><b>The protein swap is your other secret:</b> same meal, your anchor in your portion, chicken or beef for whoever wants it — one pan, two proteins, zero drama.</li>
    <li><b>Build-your-own nights</b> (tacos, bowls, flatbread pizza, dosa night) are the easiest wins — everyone assembles, you just weigh your components.</li>
+   <li><b>Cook once, eat twice is the whole system:</b> the pot you make Monday night is Tuesday's lunch — for you AND for whoever takes lunch to work or school. One cleanup, two meals, and the macros are already known.</li>
   </ul>
   <div class="callout"><b>You're modeling something huge:</b> your kids are watching a mom who eats everything, enjoys it, and takes care of herself without drama. That's the legacy.</div>`;}
   else if(S.fam==="couple"){f=`<h2>Two plates, one kitchen</h2>
@@ -1680,6 +1761,7 @@ function renderRules(){
   <ul class="tight">
    <li><b>Log your treat FIRST.</b> Every morning, dessert goes in the log before breakfast does. You will never feel restricted again.</li>
    <li><b>Pre-log your day</b> when you can. If you fail to plan, you plan to fail.</li>
+   <li><b>Cook once, eat twice.</b> Last night's dinner is today's lunch — already made, already weighed, already logged once. Repeat meals aren't a lack of imagination; they're the reason this stays doable on a Wednesday.</li>
    <li><b>Protein first, calories capped, everything else lies where it lies.</b></li>
    <li><b>Fiber:</b> ${fiber}g+ a day at your calories. The fiber-forward badge marks meals carrying 8g+. Whole foods beat supplements — they keep you full.</li>
    <li><b>Can't track today?</b> Plate method: 25% starchy carb, 25% lean protein, 40% veg &amp; fruit, 10% fat. Eyeball it, move on, zero guilt.</li>
