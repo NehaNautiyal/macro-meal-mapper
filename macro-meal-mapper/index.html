@@ -251,9 +251,10 @@
     .panel{animation:rise .35s ease;}
     @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   }
+  .printonly{display:none;}
   @media print{
     body{background:#fff;color:#000;font-size:12px;}
-    .stepper,.tabs,.btnrow,.offer,.placebar,.plannerhint,.wkbtns,#offers,.err,.xbtn,.addbtn,.addform,.resume{display:none !important;}
+    .stepper,.tabs,.btnrow,.offer,.placebar,.plannerhint,.wkbtns,#offers,.err,.xbtn,.dupbtn,.addbtn,.addform,.resume,.modalwrap,.away-toggle{display:none !important;}
     .panel{box-shadow:none;border:1px solid #999;page-break-inside:avoid;}
     #tab-planner,#tab-grocery,#tab-rules{display:block !important;}
     #tab-out,#tab-family,#tab-tools{display:none !important;}
@@ -264,6 +265,17 @@
     table.grid{min-width:0;}
     #tab-grocery ul.tight li::before{content:"☐ ";}
     #tab-grocery{page-break-before:always;}
+    /* recipe packet: only the meals this week actually uses */
+    body.pr-recipes #bank{display:block !important;page-break-before:always;}
+    body.pr-recipes #bank .bkm:not(.inplan){display:none !important;}
+    body.pr-recipes #bank .bankslot.noneused{display:none !important;}
+    body.pr-recipes #bank>h2,body.pr-recipes #bank>.sub{display:none !important;}
+    body.pr-recipes .printonly{display:block !important;}
+    #bank .bkm{page-break-inside:avoid;border:1px solid #999;padding:10px 12px;}
+    #bank .swaprow,#bank .mf,#bank .grab{display:none !important;}
+    #bank details.fullr summary{display:none !important;}
+    #bank .meals{display:block !important;}
+    #bank .bkm{margin-bottom:10px;}
   }
 </style>
 
@@ -453,7 +465,7 @@
     <div class="plannerhint"><b>Tap a meal</b> for its full card · <b>drag</b> to swap any two cells — any slot, any day (breakfast-for-dinner is allowed, encouraged even) · <b>⧉</b> copies a meal to another day, so one pot can cover three · <b>✕</b> replaces or retires it · <b>↻</b> means it's already in your fridge · <b>✈️</b> under any day marks it a travel day · numbers shown are <b>what you'd actually eat</b> (×0.5 → half a serving), so each column adds up to its day total · everything saves automatically.</div>
     <div class="btnrow" style="justify-content:flex-start;">
       <button class="btn small ghost" id="shuffleBtn">Shuffle this week</button>
-      <button class="btn small ghost" onclick="window.print()">Print / save as PDF</button>
+      <button class="btn small ghost" id="printBtn1">Print / save as PDF</button>
       <button class="btn small ghost" id="xferBtn">📤 Send to another device</button>
     </div>
     <div id="bank"></div>
@@ -473,7 +485,7 @@
 
   <div class="btnrow" style="margin-top:18px;">
     <button class="btn ghost" id="back2">&larr; Change my answers</button>
-    <button class="btn" onclick="window.print()">Print / save as PDF</button>
+    <button class="btn" id="printBtn2">Print / save as PDF</button>
   </div>
 </section>
 
@@ -1731,6 +1743,56 @@ function cellX(sk,d){
   const b4=document.createElement("button");b4.textContent="cancel";b4.onclick=hideBar;
   pb.append(b1,b2,b3,b4);
 }
+/* ---------- printing: map only, or map + the recipes this week uses ---------- */
+function mealsUsedThisWeek(){
+  const ids=new Set();
+  SLOTS.forEach(([sk])=>DAYS.forEach((_,d)=>{
+    if(isAway(curWeek,d))return;
+    const id=plan[curWeek][sk][d];
+    if(id!=null&&byId(id))ids.add(id);
+  }));
+  return ids;
+}
+function doPrint(withRecipes){
+  hideBar();
+  if(!withRecipes){window.print();return;}
+  const ids=mealsUsedThisWeek();
+  document.querySelectorAll("#bank .bkm").forEach(el=>{
+    const on=ids.has(+el.dataset.id);
+    el.classList.toggle("inplan",on);
+    if(on){const d=el.querySelector("details.fullr");if(d){d.dataset.wasOpen=d.open?"1":"0";d.open=true;}}
+  });
+  document.querySelectorAll("#bank .bankslot").forEach(sec=>{
+    sec.classList.toggle("noneused",!sec.querySelector(".bkm.inplan"));
+  });
+  document.body.classList.add("pr-recipes");
+  const cleanup=()=>{
+    document.body.classList.remove("pr-recipes");
+    document.querySelectorAll("#bank .bkm").forEach(el=>{
+      el.classList.remove("inplan");
+      const d=el.querySelector("details.fullr");
+      if(d&&d.dataset.wasOpen!==undefined){d.open=d.dataset.wasOpen==="1";delete d.dataset.wasOpen;}
+    });
+    document.querySelectorAll("#bank .bankslot").forEach(s=>s.classList.remove("noneused"));
+    window.removeEventListener("afterprint",cleanup);
+  };
+  window.addEventListener("afterprint",cleanup);
+  setTimeout(()=>{window.print();setTimeout(cleanup,1500);},60);
+}
+function printMenu(){
+  clearModes();
+  const n=mealsUsedThisWeek().size;
+  const pb=bar(`Print week ${curWeek+1}: `);
+  const b1=document.createElement("button");b1.textContent="Plan + grocery list";
+  b1.onclick=()=>doPrint(false);
+  const b2=document.createElement("button");b2.textContent=`Plan + grocery + ${n} recipes`;
+  b2.onclick=()=>doPrint(true);
+  const b3=document.createElement("button");b3.textContent="cancel";b3.onclick=hideBar;
+  pb.append(b1,b2,b3);
+}
+$("printBtn1").onclick=printMenu;
+$("printBtn2").onclick=printMenu;
+
 /* ---------- macro math: 4 cal per gram of protein & carbs, 9 per gram of fat ----------
    Blank calories get filled in automatically; typed calories get sanity-checked. */
 function wireMacroMath(f,noteId){
@@ -1912,7 +1974,8 @@ function bankCard(m){
 }
 function renderBank(){
   const [lo,hi]=TIERS[S.tier],mid=(lo+hi)/2;
-  let h=`<h2 style="margin-top:28px;">The meal bank</h2>
+  let h=`<h2 class="printonly" style="margin-top:0;">This week's recipes</h2>
+  <h2 style="margin-top:28px;">The meal bank</h2>
   <p class="sub">Every meal stands on its own — serving size, directions, component macros, and your auto-portion. Don't love the protein? <b>Swap it and everything recalculates</b>, calendar included. ✕ retires anything forever. One heads-up: <b>component lists show only what moves the macros</b> — spices, extracts, and leaveners are calorie-free and yours to play with, so treat every card as a blueprint, not an exact recipe.</p>
   <div class="addform"><b style="color:var(--deep);">＋ Add your own meal</b>
    <p class="hint" style="margin:4px 0 8px;">Got a go-to you already track? Drop it in — it joins the bank and your calendar, saved on this device. (You can also add one straight onto a day: hit <b>✕</b> on any meal in the calendar &rarr; <b>＋ My own meal here</b>.)</p>
