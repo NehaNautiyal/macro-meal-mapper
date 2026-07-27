@@ -152,6 +152,35 @@
   .estrow .unit{font-size:11.5px;color:var(--ink-soft);min-width:66px;}
   .estrow .rm{border:0;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:14px;padding:2px 5px;}
   .estrow .rm:hover{color:var(--spice);}
+  /* ---- mobile day view (replaces the 7-column grid on phones) ---- */
+  .daychips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+  .daychip{flex:1;min-width:38px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:10px;padding:7px 4px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-align:center;}
+  .daychip .dnum{display:block;font-size:10px;font-weight:600;color:var(--ink-soft);margin-top:2px;}
+  .daychip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground);}
+  .daychip[aria-pressed="true"] .dnum{color:var(--soft);}
+  .daychip.awaychip{border-style:dashed;background:var(--soft-bg);}
+  .dayhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .dayhead h4{font-size:19px;color:var(--deep);}
+  .dayslot{margin-bottom:10px;}
+  .dslab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--deep);
+    display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:3px;}
+  .dslab span{font-weight:600;text-transform:none;letter-spacing:0;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  .daylist .cell{margin:0;min-height:0;font-size:13.5px;padding:9px 30px 9px 11px;}
+  .daylist .cell .cm{font-size:12.5px;}
+  .daylist .cell.empty{padding:12px;}
+  .daytotbar{background:var(--ink);color:var(--ground);border-radius:10px;padding:10px 14px;
+    font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;display:flex;justify-content:space-between;
+    align-items:baseline;gap:10px;margin-top:12px;}
+  .daytotbar .sub2{font-size:12px;font-weight:600;opacity:.85;}
+  .daytotbar .num{color:var(--accent);}
+  /* scale buttons in the custom-meal modal */
+  .scalerow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:10px;
+    padding-top:10px;border-top:1px dotted var(--line);}
+  .scalerow .lbl2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);}
+  .scalebtn{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;
+    padding:5px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+  .scalebtn:hover{border-color:var(--accent);background:var(--sel);}
   .weekcheck{border-radius:10px;padding:12px 16px;margin-top:10px;font-size:14px;line-height:1.5;}
   .weekcheck.good{background:var(--soft-bg);border-left:4px solid var(--good);}
   .weekcheck.easy{background:var(--sel);border-left:4px solid var(--accent);}
@@ -254,6 +283,7 @@
   .printonly{display:none;}
   @media print{
     body{background:#fff;color:#000;font-size:12px;}
+    .daychips,.dayhead,.daytotbar{display:none !important;}
     .stepper,.tabs,.btnrow,.offer,.placebar,.plannerhint,.wkbtns,#offers,.err,.xbtn,.dupbtn,.addbtn,.addform,.resume,.modalwrap,.away-toggle{display:none !important;}
     .panel{box-shadow:none;border:1px solid #999;page-break-inside:avoid;}
     #tab-planner,#tab-grocery,#tab-rules{display:block !important;}
@@ -458,7 +488,7 @@
     <h2>Your month, mapped</h2>
     <p class="sub" id="plannerSub"></p>
     <div class="wkbtns" id="wkbtns"></div>
-    <div class="gridwrap"><table class="grid" id="grid"></table></div>
+    <div class="gridwrap"><div id="grid"></div></div>
     <div class="weektot" id="weektot"></div>
     <div class="weekcheck hidden" id="weekCheck"></div>
     <div class="travelnote hidden" id="travelNote"></div>
@@ -515,6 +545,17 @@
       <div><label for="cmF">Fat g</label><input type="number" id="cmF" min="0" max="150" inputmode="numeric"></div>
     </div>
     <p class="hint" style="margin-top:8px;">Pull these straight from your tracker — you've already done the math once. Enter protein, carbs and fat and I'll do the calories for you.</p>
+    <div class="scalerow">
+      <span class="lbl2">Only ate part of it?</span>
+      <button class="scalebtn" type="button" data-scale="0.25">¼</button>
+      <button class="scalebtn" type="button" data-scale="0.3333">⅓</button>
+      <button class="scalebtn" type="button" data-scale="0.5">½</button>
+      <button class="scalebtn" type="button" data-scale="0.75">¾</button>
+      <button class="scalebtn" type="button" data-scale="1.5">1½</button>
+      <button class="scalebtn" type="button" data-scale="2">×2</button>
+      <button class="scalebtn" type="button" data-scale="1" id="cmScaleReset" style="display:none;">↺ whole thing</button>
+    </div>
+    <p class="hint" style="margin:6px 0 0;">Enter the macros for the <b>whole</b> cookie / pan / batch, then tap what you actually ate.</p>
     <div class="calcnote" id="cmCalc"></div>
     <details class="opt" id="cmEstWrap" style="margin:12px 0 0;">
       <summary>Don't know the macros? Build it from what's in it</summary>
@@ -1249,7 +1290,8 @@ const TOOLS=[
 const S={tier:null,protein:null,carbs:null,fat:null,phase:null,diet:null,gf:false,df:false,
  loves:new Set(),prots:new Set(),otherProt:"",avoid:"",stores:new Set(),myStore:"",fam:null,out:null,alc:"no",pace:"quick",prep:true,mode:"auto"};
 const $=id=>document.getElementById(id);
-let plan=null, curWeek=0, placing=null, pendingCell=null, blocklist=new Set(), swapSel={}, CUSTOM=[];
+let plan=null, curWeek=0, curDay=(new Date().getDay()+6)%7, placing=null, pendingCell=null,
+    blocklist=new Set(), swapSel={}, CUSTOM=[];
 
 /* ---------- persistence (localStorage, no accounts needed) ---------- */
 const LSKEY="macroMealMapper.v1";
@@ -1407,6 +1449,7 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected","false"));
   t.setAttribute("aria-selected","true");
   ["planner","grocery","out","family","tools","rules"].forEach(k=>$("tab-"+k).classList.toggle("hidden",k!==t.dataset.t));
+  if(t.dataset.t==="planner"&&typeof healLayout==="function")healLayout();
 });
 
 /* ---------- filtering & scoring ---------- */
@@ -1574,6 +1617,25 @@ function renderBand(){
      ?"Four weeks, built the way a real kitchen runs: <b>a few cook sessions, then leftovers carried forward.</b> Cook Monday, eat it Tuesday for lunch. Batch a breakfast tray on Sunday, coast till Thursday. Anything marked <b>↻</b> is food you already made — that's the point, not a bug. Tap a meal for its card, drag anything anywhere, ✕ to replace."
      :"Four weeks, auto-filled from your answers — weeknights match your kitchen-time pick, weekends roam free. <b>Tap a meal to see its full card</b>, drag to rearrange, ✕ to replace.");
 }
+/* one cell, used by both the desktop week grid and the mobile day view */
+function cellHTML(sk,d,label){
+  if(isAway(curWeek,d))return `<div class="cell away" aria-label="${DAYS[d]} — away">✈️</div>`;
+  const id=plan[curWeek][sk][d];
+  if(id==null||!byId(id))
+    return `<div class="cell empty" tabindex="0" role="button" data-s="${sk}" data-d="${d}" aria-label="Pick a ${label.toLowerCase()} for ${DAYS[d]}">+ pick</div>`;
+  const m=byId(id),t=tot(m);
+  const mult=portionNum(m,sk);
+  const eatCal=Math.round(t.cal*mult),eatP=Math.round(t.p*mult);
+  const cm=m.out?`est ~${t.cal} cal · <b>~${t.p}g</b>`
+    :`${mult===1?"":portion(m,sk)+" → "}${eatCal} cal · <b>${eatP}g</b>`;
+  const carried=isLeftover(curWeek,sk,d),batch=isBatchNight(curWeek,sk,d);
+  const prepNote=carried?'<span class="prep">↻ from last night</span>':(batch?'<span class="prep">↻ same pot, night 2</span>':"");
+  return `<div class="cell${(carried||batch)?" carried":""}" draggable="true" tabindex="0" role="button" data-s="${sk}" data-d="${d}"
+    aria-label="${esc(m.n)} on ${DAYS[d]} — tap for details"><button class="xbtn" data-s="${sk}" data-d="${d}" aria-label="Remove ${esc(m.short)}">✕</button><button class="dupbtn" data-id="${id}" aria-label="Copy ${esc(m.short)} to another day">⧉</button><span class="cn">${esc(m.short)}</span>
+    <span class="cm">${cm}</span>${prepNote}</div>`;
+}
+const isPhone=()=>window.matchMedia("(max-width:700px)").matches;
+/* if the layout on screen no longer matches the viewport, fix it before painting */
 function renderGrid(){
   const [lo,hi]=TIERS[S.tier],mid=(lo+hi)/2;
   $("wkbtns").innerHTML="";
@@ -1582,39 +1644,46 @@ function renderGrid(){
     b.textContent="Week "+(w+1);b.setAttribute("aria-pressed",w===curWeek?"true":"false");
     b.onclick=()=>{curWeek=w;renderGrid();};$("wkbtns").appendChild(b);
   }
-  let h=`<thead><tr><th class="slotcol">Slot</th>${DAYS.map((dn,di)=>
-    `<th>${dn}<br><button class="away-toggle" data-d="${di}" aria-pressed="${isAway(curWeek,di)?"true":"false"}"
-      title="Traveling / eating out all day? Mark ${dn} away">${isAway(curWeek,di)?"✈️ away":"✈️"}</button></th>`).join("")}</tr></thead><tbody>`;
-  SLOTS.forEach(([sk,label,cpct,ppct])=>{
-    h+=`<tr><td class="slotlab">${label}<span class="bdg">~${Math.round(mid*cpct/10)*10} cal · ${Math.round(S.protein*ppct/5)*5}g P</span></td>`;
-    DAYS.forEach((_,d)=>{
-      if(isAway(curWeek,d)){h+=`<td class="cellwrap"><div class="cell away" aria-label="${DAYS[d]} — away">✈️</div></td>`;return;}
-      const id=plan[curWeek][sk][d];
-      if(id==null||!byId(id)){h+=`<td class="cellwrap"><div class="cell empty" tabindex="0" role="button" data-s="${sk}" data-d="${d}" aria-label="Pick a ${label.toLowerCase()} for ${DAYS[d]}">+ pick</div></td>`;return;}
-      const m=byId(id),t=tot(m);
-      /* show what actually lands on the plate — portioned — so the column adds up to the day total */
-      const mult=portionNum(m,sk);
-      const eatCal=Math.round(t.cal*mult),eatP=Math.round(t.p*mult);
-      const cm=m.out?`est ~${t.cal} cal · <b>~${t.p}g</b>`
-        :`${mult===1?"":portion(m,sk)+" → "}${eatCal} cal · <b>${eatP}g</b>`;
-      const carried=isLeftover(curWeek,sk,d),batch=isBatchNight(curWeek,sk,d);
-      const prepNote=carried?'<span class="prep">↻ from last night</span>':(batch?'<span class="prep">↻ same pot, night 2</span>':"");
-      h+=`<td class="cellwrap"><div class="cell${(carried||batch)?" carried":""}" draggable="true" tabindex="0" role="button" data-s="${sk}" data-d="${d}"
-        aria-label="${esc(m.n)} on ${DAYS[d]} — tap for details"><button class="xbtn" data-s="${sk}" data-d="${d}" aria-label="Remove ${esc(m.short)}">✕</button><button class="dupbtn" data-id="${id}" aria-label="Copy ${esc(m.short)} to another day">⧉</button><span class="cn">${esc(m.short)}</span>
-        <span class="cm">${cm}</span>${prepNote}</div></td>`;
+  if(isPhone()){
+    /* ---- phone: one day at a time, stacked. No sideways scrolling. ---- */
+    if(curDay>6||curDay<0)curDay=0;
+    let m=`<div class="daychips">`+DAYS.map((dn,di)=>{
+      const t=dayTotals(curWeek,di);
+      return `<button class="daychip${isAway(curWeek,di)?" awaychip":""}" data-day="${di}" aria-pressed="${di===curDay?"true":"false"}">${dn}
+        <span class="dnum">${isAway(curWeek,di)?"✈️":(t.n?t.cal.toLocaleString():"—")}</span></button>`;}).join("")+`</div>`;
+    m+=`<div class="dayhead"><h4>${["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"][curDay]}</h4>
+      <button class="away-toggle" data-d="${curDay}" aria-pressed="${isAway(curWeek,curDay)?"true":"false"}"
+        style="border:1.5px solid var(--line);padding:6px 12px;border-radius:999px;font-size:12px;">${isAway(curWeek,curDay)?"✈️ away — tap to plan it":"✈️ mark as travel day"}</button></div>`;
+    m+=`<div class="daylist">`+SLOTS.map(([sk,label,cpct,ppct])=>
+      `<div class="dayslot"><div class="dslab">${label}<span>~${Math.round(mid*cpct/10)*10} cal · ${Math.round(S.protein*ppct/5)*5}g P</span></div>
+       ${cellHTML(sk,curDay,label)}</div>`).join("")+`</div>`;
+    const dt=dayTotals(curWeek,curDay);
+    m+=dt.away
+      ?`<div class="daytotbar"><span>✈️ Travel day</span><span class="sub2">nothing planned — on purpose</span></div>`
+      :(dt.n?`<div class="daytotbar"><span><span class="num">${dt.cal.toLocaleString()}</span> cal · <span class="num">${dt.p}g</span> protein</span>
+          <span class="sub2">target ${lo.toLocaleString()}–${hi.toLocaleString()}</span></div>`
+        :`<div class="daytotbar"><span>Nothing planned yet</span><span class="sub2">tap a slot to pick</span></div>`);
+    $("grid").innerHTML=m;
+  }else{
+    let h=`<table class="grid"><thead><tr><th class="slotcol">Slot</th>${DAYS.map((dn,di)=>
+      `<th>${dn}<br><button class="away-toggle" data-d="${di}" aria-pressed="${isAway(curWeek,di)?"true":"false"}"
+        title="Traveling / eating out all day? Mark ${dn} away">${isAway(curWeek,di)?"✈️ away":"✈️"}</button></th>`).join("")}</tr></thead><tbody>`;
+    SLOTS.forEach(([sk,label,cpct,ppct])=>{
+      h+=`<tr><td class="slotlab">${label}<span class="bdg">~${Math.round(mid*cpct/10)*10} cal · ${Math.round(S.protein*ppct/5)*5}g P</span></td>`;
+      DAYS.forEach((_,d)=>{h+=`<td class="cellwrap">${cellHTML(sk,d,label)}</td>`;});
+      h+="</tr>";
     });
-    h+="</tr>";
-  });
-  h+=`<tr><td class="daytot" style="text-align:left;text-transform:uppercase;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);">Day total</td>`;
-  DAYS.forEach((_,d)=>{
-    const t=dayTotals(curWeek,d);
-    if(t.away){h+=`<td class="daytot"><span>✈️ away</span></td>`;return;}
-    if(!t.n){h+=`<td class="daytot"><span>—</span></td>`;return;}
-    const cls=t.cal>hi+60?"hot":(t.cal<lo-60?"low":"ok");
-    h+=`<td class="daytot"><span class="${cls}">${t.cal.toLocaleString()} cal</span><span>${t.p}g P</span></td>`;
-  });
-  h+="</tr>";
-  $("grid").innerHTML=h+"</tbody>";
+    h+=`<tr><td class="daytot" style="text-align:left;text-transform:uppercase;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);">Day total</td>`;
+    DAYS.forEach((_,d)=>{
+      const t=dayTotals(curWeek,d);
+      if(t.away){h+=`<td class="daytot"><span>✈️ away</span></td>`;return;}
+      if(!t.n){h+=`<td class="daytot"><span>—</span></td>`;return;}
+      const cls=t.cal>hi+60?"hot":(t.cal<lo-60?"low":"ok");
+      h+=`<td class="daytot"><span class="${cls}">${t.cal.toLocaleString()} cal</span><span>${t.p}g P</span></td>`;
+    });
+    h+="</tr></tbody></table>";
+    $("grid").innerHTML=h;
+  }
   let W={cal:0,p:0,c:0,f:0},days=0;
   DAYS.forEach((_,d)=>{const t=dayTotals(curWeek,d);if(t.n){W.cal+=t.cal;W.p+=t.p;W.c+=t.c;W.f+=t.f;days++;}});
   $("weektot").innerHTML=days?`<span><b>Week ${curWeek+1} totals:</b></span>
@@ -1663,6 +1732,9 @@ function renderGrid(){
       :`Short trips barely move the needle. Pre-log what you can from the menu, anchor every meal with protein first, and use the <b>Eating Out</b> tab for the ordering formula. One weekend does not undo a month.`)
       +` Nothing is planned for these days on purpose — no wasted groceries, no guilt about "skipping" meals.`;
   }
+  document.querySelectorAll("#grid .daychip").forEach(c=>{
+    c.addEventListener("click",()=>{curDay=+c.dataset.day;clearModes();renderGrid();});
+  });
   document.querySelectorAll("#grid .away-toggle").forEach(t=>{
     t.addEventListener("click",()=>{
       const d=+t.dataset.d;
@@ -1873,12 +1945,40 @@ $("estUse").onclick=()=>{
   $("cmCalc").innerHTML=`✓ Estimated from your ingredients: <b>${t.cal} cal · ${t.p}g protein</b>. Close enough to plan with — tighten it later if you weigh it.`;
 };
 
+/* ---------- partial servings: enter the whole thing, tap what you ate ---------- */
+let scaleBase=null;   // the "whole item" macros, so repeated taps don't compound
+const FRACLABEL={"0.25":"¼","0.3333":"⅓","0.5":"½","0.75":"¾","1.5":"1½","2":"double","1":""};
+function captureScaleBase(){
+  scaleBase={cal:+$("cmCal").value||0,p:+$("cmP").value||0,c:+$("cmC").value||0,f:+$("cmF").value||0,
+             srv:$("cmSrv").value.trim()};
+}
+document.querySelectorAll(".scalebtn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    if(!scaleBase)captureScaleBase();
+    if(!scaleBase.cal&&!scaleBase.p){flashHint("Enter the macros for the whole thing first, then tap a fraction.");return;}
+    const k=parseFloat(b.dataset.scale);
+    $("cmCal").value=Math.round(scaleBase.cal*k);
+    $("cmP").value=Math.round(scaleBase.p*k);
+    $("cmC").value=Math.round(scaleBase.c*k);
+    $("cmF").value=Math.round(scaleBase.f*k);
+    const frac=FRACLABEL[b.dataset.scale]||"";
+    if(scaleBase.srv)$("cmSrv").value=(k===1?scaleBase.srv:`${frac} of ${scaleBase.srv}`);
+    $("cmScaleReset").style.display=(k===1?"none":"inline-block");
+    const note=$("cmCalc");note.style.display="block";note.className="calcnote ok";
+    note.innerHTML=k===1
+      ?`✓ Back to the whole thing: <b>${$("cmCal").value} cal · ${$("cmP").value}g protein</b>.`
+      :`✓ Scaled to <b>${frac||k+"×"}</b> — logging <b>${$("cmCal").value} cal · ${$("cmP").value}g protein</b>. The other ${k<1?"portion stays in the fridge":"servings are counted"}.`;
+  });
+});
+["cmCal","cmP","cmC","cmF"].forEach(id=>$(id).addEventListener("input",()=>{scaleBase=null;$("cmScaleReset").style.display="none";}));
+
 /* ---------- add-your-own-meal modal (from a cell, or from the bank) ---------- */
 let cmTarget=null;
 function openCustomModal(target){
   cmTarget=target||null;
   ["cmName","cmSrv","cmCal","cmP","cmC","cmF"].forEach(id=>$(id).value="");
   $("cmErr").style.display="none";cmMath.reset();
+  scaleBase=null;$("cmScaleReset").style.display="none";
   $("estRows").innerHTML="";estAddRow();estAddRow();estAddRow();estTotal();$("cmEstWrap").open=false;
   if(cmTarget){
     $("cmSlot").value=cmTarget.s;
@@ -2143,6 +2243,24 @@ function render(){
   if(!plan)buildPlan();
   renderGrid();renderBank();
   renderGrocery();renderOut();renderFamily();renderTools();renderRules();
+}
+/* redraw when the viewport crosses the phone/desktop line (rotation, resize, split-screen) */
+const PHONE_MQ=window.matchMedia("(max-width:700px)");
+let lastPhone=PHONE_MQ.matches;
+function onBreakpoint(){
+  const now=PHONE_MQ.matches;
+  if(now!==lastPhone){lastPhone=now;if(plan)renderGrid();}
+}
+if(PHONE_MQ.addEventListener)PHONE_MQ.addEventListener("change",onBreakpoint);
+else if(PHONE_MQ.addListener)PHONE_MQ.addListener(onBreakpoint);  /* older Safari */
+window.addEventListener("resize",onBreakpoint);
+window.addEventListener("orientationchange",()=>setTimeout(onBreakpoint,80));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)onBreakpoint();});
+/* last resort: if the drawn layout ever disagrees with the viewport, fix it on the next tap */
+function healLayout(){
+  if(!plan)return;
+  const drawnPhone=!document.querySelector("#grid table.grid");
+  if(drawnPhone!==PHONE_MQ.matches){lastPhone=PHONE_MQ.matches;renderGrid();}
 }
 /* every external link opens in a new tab — including ones added in future meal batches */
 document.addEventListener("click",e=>{
