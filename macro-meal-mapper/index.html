@@ -121,6 +121,25 @@
   .cell.empty{display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
     border-style:dashed;font-weight:700;padding:6px;}
   .cell.empty:hover{border-color:var(--accent);color:var(--accent-ink);}
+  .cell.away{display:flex;align-items:center;justify-content:center;background:var(--soft-bg);
+    border-style:dashed;color:var(--ink-soft);font-weight:700;cursor:default;padding:6px;}
+  th .away-toggle{border:0;background:transparent;font:inherit;font-size:11px;font-weight:700;
+    color:var(--ink-soft);cursor:pointer;padding:2px 6px;border-radius:6px;letter-spacing:.06em;}
+  th .away-toggle:hover{background:var(--soft-bg);color:var(--accent-ink);}
+  th .away-toggle[aria-pressed="true"]{background:var(--accent);color:#231000;}
+  .travelnote{border-left:4px solid var(--soft);background:var(--soft-bg);border-radius:0 10px 10px 0;
+    padding:13px 16px;font-size:14px;margin-top:10px;}
+  .travelnote b{color:var(--deep);}
+  /* add-your-own-meal modal */
+  .modalwrap{position:fixed;inset:0;background:rgba(14,65,68,.55);display:flex;align-items:center;
+    justify-content:center;z-index:20;padding:18px;}
+  .modal{background:var(--card);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.3);
+    padding:22px;max-width:460px;width:100%;max-height:90vh;overflow:auto;}
+  .modal h3{font-size:21px;color:var(--deep);margin-bottom:4px;}
+  .modal .row2{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:10px;}
+  .modal label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;}
+  .modal input[type=text]{max-width:100%;}
+  .modal input[type=number]{width:84px;}
   td.daytot{font-variant-numeric:tabular-nums;font-size:11.5px;font-weight:700;text-align:center;
     padding:7px 4px;border-bottom:0;color:var(--ink);}
   td.daytot .ok{color:var(--good);} td.daytot .hot{color:var(--spice);} td.daytot .low{color:var(--ink-soft);}
@@ -412,7 +431,8 @@
     <div class="wkbtns" id="wkbtns"></div>
     <div class="gridwrap"><table class="grid" id="grid"></table></div>
     <div class="weektot" id="weektot"></div>
-    <div class="plannerhint"><b>Tap a meal</b> for its full card · <b>drag</b> to swap any two cells — any slot, any day (breakfast-for-dinner is allowed, encouraged even) · <b>⧉</b> copies a meal to another day, so one pot can cover three · <b>✕</b> replaces or retires it · <b>↻</b> means it's already in your fridge · day totals use your auto-portions · everything saves automatically.</div>
+    <div class="travelnote hidden" id="travelNote"></div>
+    <div class="plannerhint"><b>Tap a meal</b> for its full card · <b>drag</b> to swap any two cells — any slot, any day (breakfast-for-dinner is allowed, encouraged even) · <b>⧉</b> copies a meal to another day, so one pot can cover three · <b>✕</b> replaces or retires it · <b>↻</b> means it's already in your fridge · <b>✈️</b> under any day marks it a travel day · day totals use your auto-portions · everything saves automatically.</div>
     <div class="btnrow" style="justify-content:flex-start;">
       <button class="btn small ghost" id="shuffleBtn">Shuffle this week</button>
       <button class="btn small ghost" onclick="window.print()">Print / save as PDF</button>
@@ -440,6 +460,38 @@
 </section>
 
 <div class="placebar" id="placebar"></div>
+
+<div class="modalwrap hidden" id="cmModal" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+  <div class="modal">
+    <h3 id="cmTitle">Add your own meal</h3>
+    <p class="hint" id="cmWhere">It joins your meal bank and saves on this device.</p>
+    <div class="row2">
+      <div style="flex:1;min-width:200px;"><label for="cmName">What is it?</label>
+        <input type="text" id="cmName" placeholder="Mom's rajma bowl"></div>
+    </div>
+    <div class="row2">
+      <div style="flex:1;min-width:180px;"><label for="cmSrv">1 serving =</label>
+        <input type="text" id="cmSrv" placeholder="1 bowl (350g)"></div>
+      <div><label for="cmSlot">Usually a</label>
+        <select id="cmSlot" style="font-size:14px;padding:8px;">
+          <option value="b">Breakfast</option><option value="l">Lunch</option>
+          <option value="s">Snack</option><option value="d" selected>Dinner</option>
+          <option value="t">Treat</option></select></div>
+    </div>
+    <div class="row2">
+      <div><label for="cmCal">Calories</label><input type="number" id="cmCal" min="0" max="2000" inputmode="numeric"></div>
+      <div><label for="cmP">Protein g</label><input type="number" id="cmP" min="0" max="150" inputmode="numeric"></div>
+      <div><label for="cmC">Carbs g</label><input type="number" id="cmC" min="0" max="300" inputmode="numeric"></div>
+      <div><label for="cmF">Fat g</label><input type="number" id="cmF" min="0" max="150" inputmode="numeric"></div>
+    </div>
+    <p class="hint" style="margin-top:8px;">Pull these straight from your tracker — you've already done the math once.</p>
+    <p class="err" id="cmErr">A name, calories, and protein are the minimum.</p>
+    <div class="btnrow" style="margin-top:14px;">
+      <button class="btn small ghost" id="cmCancel" type="button">Cancel</button>
+      <button class="btn small primary" id="cmSave" type="button">Add it</button>
+    </div>
+  </div>
+</div>
 
 <footer>
   <p><b>Disclaimer:</b> The Macro Meal Mapper is provided for informational and educational purposes only and does not constitute medical advice. It is not a substitute for guidance from a qualified healthcare professional tailored to your specific circumstances. Consult a qualified medical doctor before making changes to your nutrition, especially if you are pregnant, breastfeeding, managing a health condition or food allergy, or have a history of disordered eating. Macro tracking is not appropriate for anyone currently experiencing disordered eating. Always verify ingredient labels yourself when managing allergies. Nothing here assigns calorie targets to children — kids simply eat the family meal.</p>
@@ -1308,7 +1360,7 @@ function buildWeek(seed){
   const pick=(list,i)=>list.length?list[i%list.length].id:null;
   {
     const w=seed;
-    const wk={b:[],l:[],s:[],d:[],t:[]};
+    const wk={b:[],l:[],s:[],d:[],t:[],away:DAYS.map(()=>false)};
     if(S.mode==="self"){SLOTS.forEach(([sk])=>wk[sk]=DAYS.map(()=>null));return wk;}
 
     /* 1. Reserve eating-out nights FIRST so the cooking plan builds around real life */
@@ -1359,14 +1411,17 @@ function buildWeek(seed){
   }
 }
 function buildPlan(){plan=[];for(let w=0;w<4;w++)plan.push(buildWeek(w));}
+/* travel days: nothing is planned, nothing is carried across them */
+const isAway=(w,d)=>!!(plan[w]&&plan[w].away&&plan[w].away[d]);
+function awayCount(w){return DAYS.reduce((n,_,d)=>n+(isAway(w,d)?1:0),0);}
 /* a cell is "carried forward" if the same dish was cooked the night before */
 function isLeftover(w,sk,d){
-  if(sk!=="l"||d<1)return false;
+  if(sk!=="l"||d<1||isAway(w,d)||isAway(w,d-1))return false;
   const id=plan[w].l[d];
   return id!=null&&id!==900&&id===plan[w].d[d-1];
 }
 function isBatchNight(w,sk,d){
-  if(sk!=="d"||d<1)return false;
+  if(sk!=="d"||d<1||isAway(w,d)||isAway(w,d-1))return false;
   const id=plan[w].d[d];
   return id!=null&&id!==900&&id===plan[w].d[d-1];
 }
@@ -1374,6 +1429,7 @@ function isBatchNight(w,sk,d){
 function cookSessions(w){
   let n=0;
   DAYS.forEach((_,d)=>{
+    if(isAway(w,d))return;
     const id=plan[w].d[d];
     if(id==null||id===900)return;
     const m=byId(id);
@@ -1392,6 +1448,7 @@ function portionNum(m,sk){
 function portion(m,sk){return m.free?"":"×"+portionNum(m,sk);}
 function dayTotals(w,d){
   let cal=0,p=0,c=0,f=0,n=0;
+  if(isAway(w,d))return{cal:0,p:0,c:0,f:0,n:0,away:true};
   SLOTS.forEach(([sk])=>{
     const id=plan[w][sk][d];if(id==null)return;
     const m=byId(id);if(!m||m.free)return;
@@ -1443,10 +1500,13 @@ function renderGrid(){
     b.textContent="Week "+(w+1);b.setAttribute("aria-pressed",w===curWeek?"true":"false");
     b.onclick=()=>{curWeek=w;renderGrid();};$("wkbtns").appendChild(b);
   }
-  let h=`<thead><tr><th class="slotcol">Slot</th>${DAYS.map(d=>`<th>${d}</th>`).join("")}</tr></thead><tbody>`;
+  let h=`<thead><tr><th class="slotcol">Slot</th>${DAYS.map((dn,di)=>
+    `<th>${dn}<br><button class="away-toggle" data-d="${di}" aria-pressed="${isAway(curWeek,di)?"true":"false"}"
+      title="Traveling / eating out all day? Mark ${dn} away">${isAway(curWeek,di)?"✈️ away":"✈️"}</button></th>`).join("")}</tr></thead><tbody>`;
   SLOTS.forEach(([sk,label,cpct,ppct])=>{
     h+=`<tr><td class="slotlab">${label}<span class="bdg">~${Math.round(mid*cpct/10)*10} cal · ${Math.round(S.protein*ppct/5)*5}g P</span></td>`;
     DAYS.forEach((_,d)=>{
+      if(isAway(curWeek,d)){h+=`<td class="cellwrap"><div class="cell away" aria-label="${DAYS[d]} — away">✈️</div></td>`;return;}
       const id=plan[curWeek][sk][d];
       if(id==null||!byId(id)){h+=`<td class="cellwrap"><div class="cell empty" tabindex="0" role="button" data-s="${sk}" data-d="${d}" aria-label="Pick a ${label.toLowerCase()} for ${DAYS[d]}">+ pick</div></td>`;return;}
       const m=byId(id),t=tot(m);
@@ -1462,6 +1522,7 @@ function renderGrid(){
   h+=`<tr><td class="daytot" style="text-align:left;text-transform:uppercase;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);">Day total</td>`;
   DAYS.forEach((_,d)=>{
     const t=dayTotals(curWeek,d);
+    if(t.away){h+=`<td class="daytot"><span>✈️ away</span></td>`;return;}
     if(!t.n){h+=`<td class="daytot"><span>—</span></td>`;return;}
     const cls=t.cal>hi+60?"hot":(t.cal<lo-60?"low":"ok");
     h+=`<td class="daytot"><span class="${cls}">${t.cal.toLocaleString()} cal</span><span>${t.p}g P</span></td>`;
@@ -1474,8 +1535,26 @@ function renderGrid(){
     <span>${W.cal.toLocaleString()} cal</span><span><b>${W.p.toLocaleString()}g protein</b></span>
     <span>${W.c.toLocaleString()}g carbs</span><span>${W.f.toLocaleString()}g fat</span>
     <span style="color:var(--ink-soft);">daily avg ${Math.round(W.cal/days).toLocaleString()} cal · ${Math.round(W.p/days)}g P${S.out!=="rare"?" · eating-out days will differ, that's fine":""}</span>
-    <span style="color:var(--accent-ink);font-weight:700;">🍲 ${cookSessions(curWeek)} cook sessions all week</span>`
-   :`<span>Nothing planned yet — tap a "+ pick" cell to start building.</span>`;
+    <span style="color:var(--accent-ink);font-weight:700;">🍲 ${cookSessions(curWeek)} cook sessions${awayCount(curWeek)?` · ✈️ ${awayCount(curWeek)} day${awayCount(curWeek)>1?"s":""} away`:" all week"}</span>`
+   :`<span>${awayCount(curWeek)===7?"✈️ You're away all week — go enjoy it.":'Nothing planned yet — tap a "+ pick" cell to start building.'}</span>`;
+  /* travel coaching — only when it's relevant */
+  const tn=$("travelNote"),aw=awayCount(curWeek);
+  tn.classList.toggle("hidden",aw===0);
+  if(aw){
+    const long=aw>=4;
+    tn.innerHTML=`<b>✈️ ${aw} day${aw>1?"s":""} away this week.</b> `+(long
+      ?`A trip this long isn't a cut — and it shouldn't be. My honest advice: <b>take the diet break and eat at maintenance.</b> A week at maintenance actually helps your metabolism; a week of white-knuckling ruins the trip AND rarely holds. Keep protein up where you can, walk a lot, drink water, and come home to your map — it'll be right here.`
+      :`Short trips barely move the needle. Pre-log what you can from the menu, anchor every meal with protein first, and use the <b>Eating Out</b> tab for the ordering formula. One weekend does not undo a month.`)
+      +` Nothing is planned for these days on purpose — no wasted groceries, no guilt about "skipping" meals.`;
+  }
+  document.querySelectorAll("#grid .away-toggle").forEach(t=>{
+    t.addEventListener("click",()=>{
+      const d=+t.dataset.d;
+      if(!plan[curWeek].away)plan[curWeek].away=DAYS.map(()=>false);
+      plan[curWeek].away[d]=!plan[curWeek].away[d];
+      clearModes();renderGrid();
+    });
+  });
   document.querySelectorAll("#grid .xbtn").forEach(x=>{
     x.addEventListener("click",e=>{e.stopPropagation();cellX(x.dataset.s,+x.dataset.d);});
   });
@@ -1541,11 +1620,43 @@ function cellX(sk,d){
   const pb=bar(`<b>${esc(m.short)}</b> — `);
   const b1=document.createElement("button");b1.textContent="Different meal here";
   b1.onclick=()=>{replaceIn(sk,d,curWeek);renderGrid();hideBar();};
-  const b2=document.createElement("button");b2.textContent="Never show me this again";
-  b2.onclick=()=>neverAgain(id);
-  const b3=document.createElement("button");b3.textContent="cancel";b3.onclick=hideBar;
-  pb.append(b1,b2,b3);
+  const b2=document.createElement("button");b2.textContent="＋ My own meal here";
+  b2.onclick=()=>{hideBar();openCustomModal({s:sk,d:d});};
+  const b3=document.createElement("button");b3.textContent="Never show me this again";
+  b3.onclick=()=>neverAgain(id);
+  const b4=document.createElement("button");b4.textContent="cancel";b4.onclick=hideBar;
+  pb.append(b1,b2,b3,b4);
 }
+/* ---------- add-your-own-meal modal (from a cell, or from the bank) ---------- */
+let cmTarget=null;
+function openCustomModal(target){
+  cmTarget=target||null;
+  ["cmName","cmSrv","cmCal","cmP","cmC","cmF"].forEach(id=>$(id).value="");
+  $("cmErr").style.display="none";
+  if(cmTarget){
+    $("cmSlot").value=cmTarget.s;
+    $("cmWhere").innerHTML=`Going straight onto <b>${DAYS[cmTarget.d]} ${slotName(cmTarget.s)}</b> — and into your meal bank for next time.`;
+  }else{
+    $("cmWhere").textContent="It joins your meal bank and saves on this device.";
+  }
+  $("cmModal").classList.remove("hidden");
+  setTimeout(()=>$("cmName").focus(),50);
+}
+function closeCustomModal(){$("cmModal").classList.add("hidden");cmTarget=null;}
+$("cmCancel").onclick=closeCustomModal;
+$("cmModal").addEventListener("click",e=>{if(e.target.id==="cmModal")closeCustomModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("cmModal").classList.contains("hidden"))closeCustomModal();});
+$("cmSave").onclick=()=>{
+  const c={n:$("cmName").value.trim(),s:$("cmSlot").value,srv:$("cmSrv").value.trim(),
+    cal:+$("cmCal").value||0,p:+$("cmP").value||0,c:+$("cmC").value||0,f:+$("cmF").value||0};
+  if(!c.n||!c.cal||!c.p){$("cmErr").style.display="block";return;}
+  CUSTOM.push(c);const m=registerCustom(c);
+  if(cmTarget)plan[curWeek][cmTarget.s][cmTarget.d]=m.id;
+  const placed=!!cmTarget;
+  closeCustomModal();renderGrid();renderBank();saveState();
+  if(placed){flashHint(`${c.n} is on your plan — and in your bank for next time.`);}
+  else gotoCard(m.id);
+};
 function neverAgain(id){
   blocklist.add(id);
   for(let w=0;w<4;w++)SLOTS.forEach(([sk])=>{DAYS.forEach((_,d)=>{
@@ -1619,20 +1730,8 @@ function renderBank(){
   let h=`<h2 style="margin-top:28px;">The meal bank</h2>
   <p class="sub">Every meal stands on its own — serving size, directions, component macros, and your auto-portion. Don't love the protein? <b>Swap it and everything recalculates</b>, calendar included. ✕ retires anything forever. One heads-up: <b>component lists show only what moves the macros</b> — spices, extracts, and leaveners are calorie-free and yours to play with, so treat every card as a blueprint, not an exact recipe.</p>
   <div class="addform"><b style="color:var(--deep);">＋ Add your own meal</b>
-   <p class="hint" style="margin:4px 0 0;">Got a go-to you already track? Drop it in — it joins the bank and your calendar, saved on this device.</p>
-   <div class="row2">
-    <div><label for="cmName">Name</label><input type="text" id="cmName" placeholder="Mom's rajma bowl"></div>
-    <div><label for="cmSlot">Slot</label><select id="cmSlot"><option value="b">Breakfast</option><option value="l">Lunch</option><option value="s">Snack</option><option value="d" selected>Dinner</option><option value="t">Treat</option></select></div>
-    <div><label for="cmSrv">1 serving =</label><input type="text" id="cmSrv" style="max-width:160px;" placeholder="1 bowl (350g)"></div>
-   </div>
-   <div class="row2">
-    <div><label for="cmCal">Calories</label><input type="number" id="cmCal" min="0" max="2000"></div>
-    <div><label for="cmP">Protein g</label><input type="number" id="cmP" min="0" max="150"></div>
-    <div><label for="cmC">Carbs g</label><input type="number" id="cmC" min="0" max="300"></div>
-    <div><label for="cmF">Fat g</label><input type="number" id="cmF" min="0" max="150"></div>
-    <div><button class="btn small primary" id="cmAdd" type="button">Add it</button></div>
-   </div>
-   <p class="err" id="cmErr">Give it a name, calories, and protein at minimum.</p>
+   <p class="hint" style="margin:4px 0 8px;">Got a go-to you already track? Drop it in — it joins the bank and your calendar, saved on this device. (You can also add one straight onto a day: hit <b>✕</b> on any meal in the calendar &rarr; <b>＋ My own meal here</b>.)</p>
+   <button class="btn small primary" id="cmOpen" type="button">Add my own meal</button>
   </div>`;
   SLOTS.forEach(([sk,label,cpct,ppct])=>{
     const L=slotList(sk);
@@ -1650,13 +1749,7 @@ function renderBank(){
     <p class="hint">Real life includes restaurants — that's not cheating the plan, it IS the plan. Numbers are ballparks; the full ordering playbook lives in the Eating Out tab.</p>
     <div class="meals">${OUT.map(bankCard).join("")}</div></div>`;
   $("bank").innerHTML=h;
-  $("cmAdd").onclick=()=>{
-    const c={n:$("cmName").value.trim(),s:$("cmSlot").value,srv:$("cmSrv").value.trim(),
-      cal:+$("cmCal").value||0,p:+$("cmP").value||0,c:+$("cmC").value||0,f:+$("cmF").value||0};
-    if(!c.n||!c.cal||!c.p){$("cmErr").style.display="block";return;}
-    CUSTOM.push(c);const m=registerCustom(c);
-    saveState();renderBank();renderGrid();gotoCard(m.id);
-  };
+  $("cmOpen").onclick=()=>openCustomModal(null);
   document.querySelectorAll("#bank .xbtn").forEach(x=>{
     x.addEventListener("click",e=>{e.stopPropagation();neverAgain(+x.dataset.id);});
   });
@@ -1768,6 +1861,7 @@ function renderRules(){
    <li><b>One bad day ruins nothing.</b> Observations, not judgements — you're a macro scientist, remember?</li>
    <li><b>The scale lies daily and tells the truth monthly.</b> Trend lines, clothes, photos, energy. All of it counts.</li>
    <li><b>Your cycle should never stop.</b> If it does, you're cutting too hard — eat more and talk to your doctor. Non-negotiable.</li>
+   <li><b>Vacations get a diet break, not a white-knuckle.</b> Mark the days ✈️ on your calendar and eat at maintenance — it's better for your metabolism than a miserable week of restriction, and it's the reason you'll still be doing this next year. Come home, open your map, keep going.</li>
   </ul>
   <div class="callout"><b>When to get my eyes on it:</b> two full weeks where the scale, measurements, clothes, AND photos all flatline = a real plateau. Don't guess at levers — that's a <a href="https://roaspy.coachnehanautiyal.com/righttrackreviewcall" target="_blank" rel="noopener">Right-Track Review</a> conversation.</div>`
   +(S.alc!=="no"?`
