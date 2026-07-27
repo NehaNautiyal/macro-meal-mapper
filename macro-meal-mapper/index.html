@@ -140,6 +140,22 @@
   .modal label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;}
   .modal input[type=text]{max-width:100%;}
   .modal input[type=number]{width:84px;}
+  .calcnote{font-size:12.5px;margin-top:10px;padding:9px 12px;border-radius:10px;display:none;line-height:1.45;}
+  .calcnote.ok{background:var(--soft-bg);color:var(--ink);border-left:3px solid var(--good);}
+  .calcnote.warn{background:var(--lockbg,var(--sel));color:var(--ink);border-left:3px solid var(--accent);}
+  .calcnote b{color:var(--deep);}
+  .linkbtn{border:0;background:var(--accent);color:#231000;border-radius:999px;padding:3px 11px;
+    font:inherit;font-size:12px;font-weight:700;cursor:pointer;margin-left:4px;}
+  .estrow{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+  .estrow select{flex:1;min-width:0;font-size:12.5px;}
+  .estrow input{width:56px;font-size:12.5px;padding:6px;}
+  .estrow .unit{font-size:11.5px;color:var(--ink-soft);min-width:66px;}
+  .estrow .rm{border:0;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:14px;padding:2px 5px;}
+  .estrow .rm:hover{color:var(--spice);}
+  .weekcheck{border-radius:10px;padding:12px 16px;margin-top:10px;font-size:14px;line-height:1.5;}
+  .weekcheck.good{background:var(--soft-bg);border-left:4px solid var(--good);}
+  .weekcheck.easy{background:var(--sel);border-left:4px solid var(--accent);}
+  .weekcheck b{color:var(--deep);}
   td.daytot{font-variant-numeric:tabular-nums;font-size:11.5px;font-weight:700;text-align:center;
     padding:7px 4px;border-bottom:0;color:var(--ink);}
   td.daytot .ok{color:var(--good);} td.daytot .hot{color:var(--spice);} td.daytot .low{color:var(--ink-soft);}
@@ -357,6 +373,7 @@
       <div><label class="lbl" for="g2F" style="font-size:12px;">Fat g</label><input type="number" id="g2F" min="0" max="150"></div>
       <div><button class="btn small primary" id="g2Add" type="button">Add it</button></div>
     </div>
+    <div class="calcnote" id="g2Calc"></div>
     <p class="err" id="g2Err">Give it a name, calories, and protein at minimum.</p>
     <ul class="tight" id="g2List" style="margin-top:10px;"></ul>
   </details>
@@ -431,8 +448,9 @@
     <div class="wkbtns" id="wkbtns"></div>
     <div class="gridwrap"><table class="grid" id="grid"></table></div>
     <div class="weektot" id="weektot"></div>
+    <div class="weekcheck hidden" id="weekCheck"></div>
     <div class="travelnote hidden" id="travelNote"></div>
-    <div class="plannerhint"><b>Tap a meal</b> for its full card · <b>drag</b> to swap any two cells — any slot, any day (breakfast-for-dinner is allowed, encouraged even) · <b>⧉</b> copies a meal to another day, so one pot can cover three · <b>✕</b> replaces or retires it · <b>↻</b> means it's already in your fridge · <b>✈️</b> under any day marks it a travel day · day totals use your auto-portions · everything saves automatically.</div>
+    <div class="plannerhint"><b>Tap a meal</b> for its full card · <b>drag</b> to swap any two cells — any slot, any day (breakfast-for-dinner is allowed, encouraged even) · <b>⧉</b> copies a meal to another day, so one pot can cover three · <b>✕</b> replaces or retires it · <b>↻</b> means it's already in your fridge · <b>✈️</b> under any day marks it a travel day · numbers shown are <b>what you'd actually eat</b> (×0.5 → half a serving), so each column adds up to its day total · everything saves automatically.</div>
     <div class="btnrow" style="justify-content:flex-start;">
       <button class="btn small ghost" id="shuffleBtn">Shuffle this week</button>
       <button class="btn small ghost" onclick="window.print()">Print / save as PDF</button>
@@ -484,7 +502,18 @@
       <div><label for="cmC">Carbs g</label><input type="number" id="cmC" min="0" max="300" inputmode="numeric"></div>
       <div><label for="cmF">Fat g</label><input type="number" id="cmF" min="0" max="150" inputmode="numeric"></div>
     </div>
-    <p class="hint" style="margin-top:8px;">Pull these straight from your tracker — you've already done the math once.</p>
+    <p class="hint" style="margin-top:8px;">Pull these straight from your tracker — you've already done the math once. Enter protein, carbs and fat and I'll do the calories for you.</p>
+    <div class="calcnote" id="cmCalc"></div>
+    <details class="opt" id="cmEstWrap" style="margin:12px 0 0;">
+      <summary>Don't know the macros? Build it from what's in it</summary>
+      <p class="hint">Pick roughly what went in — I'll add it up. These are typical values, not your exact brands, so treat the result as a solid <b>estimate</b> and weigh the real thing when you can.</p>
+      <div id="estRows"></div>
+      <div class="btnrow" style="margin-top:8px;justify-content:flex-start;gap:8px;">
+        <button class="btn small ghost" id="estAdd" type="button">+ another ingredient</button>
+        <button class="btn small primary" id="estUse" type="button">Use this estimate</button>
+      </div>
+      <div class="calcnote ok" id="estTotal" style="display:block;"></div>
+    </details>
     <p class="err" id="cmErr">A name, calories, and protein are the minimum.</p>
     <div class="btnrow" style="margin-top:14px;">
       <button class="btn small ghost" id="cmCancel" type="button">Cancel</button>
@@ -526,6 +555,47 @@ const SLOTS=[["b","Breakfast",.25,.25],["l","Lunch",.28,.25],["s","Snack",.10,.1
 const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 const A=id=>id.startsWith("http")?id:`https://amzn.to/${id}`;
 const EFFLABEL=["no-cook","15 min","cook night"];
+
+/* Ballpark reference for "I don't know the macros" — typical values per common serving.
+   Estimates good enough to PLAN with; weigh and log the real thing when you can. */
+const FOODS=[
+ ["Protein anchors",[
+  ["Chicken breast, cooked","100g",165,31,0,3.6],["Chicken thigh, cooked","100g",209,26,0,11],
+  ["Ground turkey 93%, cooked","100g",176,22,0,9],["Ground beef 90%, cooked","100g",217,26,0,12],
+  ["Steak, cooked","100g",250,27,0,15],["Salmon, cooked","100g",208,22,0,13],
+  ["Shrimp, cooked","100g",99,24,0,0.3],["White fish, cooked","100g",128,26,0,2.7],
+  ["Canned tuna in water","1 can",100,22,0,1],["Egg","1 large",72,6,0.4,5],
+  ["Egg whites","100g",52,11,0.7,0.2],["Super-firm tofu","100g",110,12,2,6],
+  ["Extra-firm tofu","100g",94,10,2,5],["Silken tofu","100g",55,5,2,3],
+  ["Tempeh","100g",192,20,8,11],["Paneer","100g",296,18,3,23],
+  ["Seitan","100g",141,25,5,2],["TVP, dry","30g",95,15,7,0.5],
+  ["Greek yogurt, nonfat","170g (¾ cup)",90,16,5,0],["Cottage cheese, nonfat","100g",72,10,4,1],
+  ["Protein powder","1 scoop",120,24,3,1.5],["Cheddar cheese","28g",113,7,1,9],
+  ["Milk, 2%","240ml (1 cup)",122,8,12,5],["Ultra-filtered milk (Fairlife)","240ml",110,13,6,4.5]]],
+ ["Carbs & beans",[
+  ["White rice, cooked","1 cup",205,4,45,0.4],["Brown rice, cooked","1 cup",218,5,46,1.6],
+  ["Pasta, cooked","1 cup",220,8,43,1.3],["Chickpea pasta, dry","56g",190,11,32,3],
+  ["Bread","1 slice",80,4,14,1],["Roti / chapati","1",100,3,18,2.5],
+  ["Naan","1",260,9,45,5],["Flour tortilla","1 medium",140,4,24,3.5],
+  ["Corn tortilla","1",60,1,12,1],["Bagel, regular","1",270,11,53,1.5],
+  ["Potato, cooked","100g",87,2,20,0.1],["Sweet potato, cooked","100g",90,2,21,0.1],
+  ["Oats, dry","40g",150,5,27,3],["Quinoa, cooked","1 cup",222,8,39,3.6],
+  ["Black beans, cooked","130g",140,9,25,0.5],["Chickpeas, cooked","130g",180,10,30,3],
+  ["Dhal / lentils, cooked","100g",116,9,20,0.4],["Rajma / kidney beans","130g",145,10,26,0.6]]],
+ ["Veg & fruit",[
+  ["Non-starchy veg, cooked","1 cup",40,2,8,0.3],["Salad greens","2 cups",15,1,3,0],
+  ["Frozen veg medley","1 cup",60,3,12,0.5],["Banana","1 medium",105,1,27,0.4],
+  ["Apple","1 medium",95,0,25,0.3],["Berries","100g",50,1,12,0.3],
+  ["Mango","100g",60,1,15,0.4],["Avocado","½ (75g)",120,1.5,6,11]]],
+ ["Fats & extras",[
+  ["Cooking oil","1 tbsp",120,0,0,14],["Ghee or butter","1 tbsp",110,0,0,12],
+  ["Peanut butter","1 tbsp",95,4,3,8],["Mixed nuts","28g",170,5,6,15],
+  ["Chia or flax seeds","10g",50,2,4,3],["Lite coconut milk","120ml",90,1,3,8],
+  ["Full-fat coconut milk","120ml",200,2,3,21],["Mayo","1 tbsp",90,0,0,10],
+  ["Hummus","28g",70,2,4,5],["Salad dressing","1 tbsp",70,0,1,7],
+  ["Yogurt / sour cream topping","30g",55,1,1,5],["Curry paste or cooking sauce","2 tbsp",60,1,8,3],
+  ["Sugar, honey or jaggery","1 tbsp",60,0,16,0],["Chocolate chips","10g",50,1,6,3]]],
+];
 
 /* protein swap table: key → [label, amount, cal, P, C, F, lvl, dairyfree, glutenfree] */
 const SWAPS={
@@ -1510,7 +1580,11 @@ function renderGrid(){
       const id=plan[curWeek][sk][d];
       if(id==null||!byId(id)){h+=`<td class="cellwrap"><div class="cell empty" tabindex="0" role="button" data-s="${sk}" data-d="${d}" aria-label="Pick a ${label.toLowerCase()} for ${DAYS[d]}">+ pick</div></td>`;return;}
       const m=byId(id),t=tot(m);
-      const cm=m.out?`est ~${t.cal} cal · <b>~${t.p}g</b>`:`${portion(m,sk)} · ${t.cal} cal · <b>${t.p}g</b>`;
+      /* show what actually lands on the plate — portioned — so the column adds up to the day total */
+      const mult=portionNum(m,sk);
+      const eatCal=Math.round(t.cal*mult),eatP=Math.round(t.p*mult);
+      const cm=m.out?`est ~${t.cal} cal · <b>~${t.p}g</b>`
+        :`${mult===1?"":portion(m,sk)+" → "}${eatCal} cal · <b>${eatP}g</b>`;
       const carried=isLeftover(curWeek,sk,d),batch=isBatchNight(curWeek,sk,d);
       const prepNote=carried?'<span class="prep">↻ from last night</span>':(batch?'<span class="prep">↻ same pot, night 2</span>':"");
       h+=`<td class="cellwrap"><div class="cell${(carried||batch)?" carried":""}" draggable="true" tabindex="0" role="button" data-s="${sk}" data-d="${d}"
@@ -1535,8 +1609,38 @@ function renderGrid(){
     <span>${W.cal.toLocaleString()} cal</span><span><b>${W.p.toLocaleString()}g protein</b></span>
     <span>${W.c.toLocaleString()}g carbs</span><span>${W.f.toLocaleString()}g fat</span>
     <span style="color:var(--ink-soft);">daily avg ${Math.round(W.cal/days).toLocaleString()} cal · ${Math.round(W.p/days)}g P${S.out!=="rare"?" · eating-out days will differ, that's fine":""}</span>
-    <span style="color:var(--accent-ink);font-weight:700;">🍲 ${cookSessions(curWeek)} cook sessions${awayCount(curWeek)?` · ✈️ ${awayCount(curWeek)} day${awayCount(curWeek)>1?"s":""} away`:" all week"}</span>`
+    <span style="color:var(--accent-ink);font-weight:700;">🍲 ${cookSessions(curWeek)} cook session${cookSessions(curWeek)===1?"":"s"}${awayCount(curWeek)?` · ✈️ ${awayCount(curWeek)} day${awayCount(curWeek)>1?"s":""} away`:" all week"}</span>`
    :`<span>${awayCount(curWeek)===7?"✈️ You're away all week — go enjoy it.":'Nothing planned yet — tap a "+ pick" cell to start building.'}</span>`;
+  /* the week is the unit that matters — say so, especially when a day runs high */
+  const wc=$("weekCheck");
+  if(!days){wc.classList.add("hidden");}
+  else{
+    wc.classList.remove("hidden");
+    const avg=Math.round(W.cal/days);
+    let over=0,under=0;
+    DAYS.forEach((_,d)=>{const t=dayTotals(curWeek,d);if(!t.n)return;
+      if(t.cal>hi+60)over++;else if(t.cal<lo-60)under++;});
+    /* a 50-cal miss is noise, not a signal — labels round harder than that */
+    const band=50;
+    const avgOver=avg>hi+band, avgUnder=avg<lo-band;
+    const gap=avgOver?avg-hi:(avgUnder?lo-avg:0);
+    if(!avgOver&&!avgUnder&&over){
+      wc.className="weekcheck good";
+      wc.innerHTML=`<b>${over} day${over>1?"s run":" runs"} high — and your week still averages ${avg.toLocaleString()} cal, right inside your range.</b> This is the whole point of looking at the week instead of the day. A big Saturday next to a light Tuesday is not a mistake; it's how normal humans eat. Nothing to fix here.`;
+    }else if(!avgOver&&!avgUnder){
+      wc.className="weekcheck good";
+      wc.innerHTML=`<b>Week average: ${avg.toLocaleString()} cal — right in range.</b> Remember the scale answers to the week, not to any single dinner.`;
+    }else if(avgOver&&gap<=150){
+      wc.className="weekcheck easy";
+      wc.innerHTML=`<b>This week averages ${avg.toLocaleString()} cal — a little above your range.</b> That's a rounding error, not a failure. If you want it tighter, shave one carb portion or trim a sauce on two days and you're there. If you don't, this still works — slower is still forward.`;
+    }else if(avgOver){
+      wc.className="weekcheck easy";
+      wc.innerHTML=`<b>This week averages ${avg.toLocaleString()} cal, about ${gap.toLocaleString()} above your range.</b> Not a disaster and definitely not a reason to start over Monday. Pick <em>one</em> lever: swap two dinners for lighter ones, drop a treat slot, or leave it — a maintenance week on purpose is a legitimate choice. Data, not drama.`;
+    }else{
+      wc.className="weekcheck easy";
+      wc.innerHTML=`<b>This week averages ${avg.toLocaleString()} cal — under your range by about ${gap.toLocaleString()}.</b> Under-eating stalls progress as surely as over-eating: energy tanks, protein slips, and the deficit stops being sustainable. Add a snack slot or size a portion up. Eat the food.`;
+    }
+  }
   /* travel coaching — only when it's relevant */
   const tn=$("travelNote"),aw=awayCount(curWeek);
   tn.classList.toggle("hidden",aw===0);
@@ -1627,12 +1731,93 @@ function cellX(sk,d){
   const b4=document.createElement("button");b4.textContent="cancel";b4.onclick=hideBar;
   pb.append(b1,b2,b3,b4);
 }
+/* ---------- macro math: 4 cal per gram of protein & carbs, 9 per gram of fat ----------
+   Blank calories get filled in automatically; typed calories get sanity-checked. */
+function wireMacroMath(f,noteId){
+  const note=$(noteId);let autoFilled=true;
+  const run=()=>{
+    const P=+$(f.p).value||0,C=+$(f.c).value||0,F=+$(f.f).value||0,entered=+$(f.cal).value||0;
+    const computed=Math.round(4*(P+C)+9*F);
+    if(!P&&!C&&!F){note.style.display="none";return;}
+    note.style.display="block";
+    if(!entered||autoFilled){
+      $(f.cal).value=computed;autoFilled=true;
+      note.className="calcnote ok";
+      note.innerHTML=`✓ Calories done for you: <b>4 × (protein + carbs) + 9 × fat = ${computed}</b>. Type over it if your label says different.`;
+      return;
+    }
+    const tol=Math.max(25,Math.round(computed*0.06));
+    if(Math.abs(entered-computed)<=tol){
+      note.className="calcnote ok";
+      note.innerHTML=`✓ Checks out — those macros come to about <b>${computed} cal</b>.`;
+    }else{
+      note.className="calcnote warn";
+      note.innerHTML=`⚠️ Your macros add up to <b>${computed} cal</b>, but you entered <b>${entered}</b>. Labels round and fiber math varies, so a small gap is normal — a big one usually means a typo or a forgotten ingredient (cooking oil is the usual culprit). <button type="button" class="linkbtn" data-use="${computed}">Use ${computed}</button>`;
+    }
+  };
+  [f.p,f.c,f.f].forEach(id=>$(id).addEventListener("input",run));
+  $(f.cal).addEventListener("input",()=>{autoFilled=false;run();});
+  note.addEventListener("click",e=>{
+    const b=e.target.closest("[data-use]");
+    if(b){$(f.cal).value=b.dataset.use;autoFilled=true;run();}
+  });
+  return{run,reset(){autoFilled=true;note.style.display="none";}};
+}
+const cmMath=wireMacroMath({cal:"cmCal",p:"cmP",c:"cmC",f:"cmF"},"cmCalc");
+wireMacroMath({cal:"g2Cal",p:"g2P",c:"g2C",f:"g2F"},"g2Calc");
+
+/* ---------- "I don't know the macros" estimator ---------- */
+const FLAT=[];FOODS.forEach(([grp,items])=>items.forEach(it=>FLAT.push(it)));
+function estOptions(){
+  return FOODS.map(([grp,items])=>`<optgroup label="${grp}">`+
+    items.map(it=>`<option value="${FLAT.indexOf(it)}">${esc(it[0])}</option>`).join("")+`</optgroup>`).join("");
+}
+function estAddRow(){
+  const row=document.createElement("div");row.className="estrow";
+  row.innerHTML=`<select aria-label="Ingredient"><option value="">— pick an ingredient —</option>${estOptions()}</select>
+    <input type="number" value="1" min="0" step="0.25" inputmode="decimal" aria-label="How many">
+    <span class="unit"></span><button class="rm" type="button" aria-label="Remove">✕</button>`;
+  row.querySelector("select").addEventListener("change",e=>{
+    const it=FLAT[+e.target.value];row.querySelector(".unit").textContent=it?"× "+it[1]:"";estTotal();
+  });
+  row.querySelector("input").addEventListener("input",estTotal);
+  row.querySelector(".rm").addEventListener("click",()=>{row.remove();estTotal();});
+  $("estRows").appendChild(row);
+}
+function estSum(){
+  let cal=0,p=0,c=0,f=0,used=0;
+  $("estRows").querySelectorAll(".estrow").forEach(row=>{
+    const idx=row.querySelector("select").value;if(idx==="")return;
+    const it=FLAT[+idx],q=parseFloat(row.querySelector("input").value)||0;
+    if(!q)return;
+    used++;cal+=it[2]*q;p+=it[3]*q;c+=it[4]*q;f+=it[5]*q;
+  });
+  return{cal:Math.round(cal),p:Math.round(p),c:Math.round(c),f:Math.round(f),used};
+}
+function estTotal(){
+  const t=estSum();
+  $("estTotal").innerHTML=t.used
+    ?`Running total: <b>${t.cal} cal · ${t.p}g protein · ${t.c}g carbs · ${t.f}g fat</b>${t.used===1?" — add the rest of the plate for a better estimate.":""}`
+    :`Pick your protein, your carb, your veg, and any oil or sauce — that's usually the whole meal.`;
+}
+$("estAdd").onclick=estAddRow;
+$("estUse").onclick=()=>{
+  const t=estSum();
+  if(!t.used){flashHint("Pick at least one ingredient first.");return;}
+  $("cmCal").value=t.cal;$("cmP").value=t.p;$("cmC").value=t.c;$("cmF").value=t.f;
+  $("cmCal").dispatchEvent(new Event("input"));
+  $("cmEstWrap").open=false;
+  $("cmCalc").className="calcnote ok";$("cmCalc").style.display="block";
+  $("cmCalc").innerHTML=`✓ Estimated from your ingredients: <b>${t.cal} cal · ${t.p}g protein</b>. Close enough to plan with — tighten it later if you weigh it.`;
+};
+
 /* ---------- add-your-own-meal modal (from a cell, or from the bank) ---------- */
 let cmTarget=null;
 function openCustomModal(target){
   cmTarget=target||null;
   ["cmName","cmSrv","cmCal","cmP","cmC","cmF"].forEach(id=>$(id).value="");
-  $("cmErr").style.display="none";
+  $("cmErr").style.display="none";cmMath.reset();
+  $("estRows").innerHTML="";estAddRow();estAddRow();estAddRow();estTotal();$("cmEstWrap").open=false;
   if(cmTarget){
     $("cmSlot").value=cmTarget.s;
     $("cmWhere").innerHTML=`Going straight onto <b>${DAYS[cmTarget.d]} ${slotName(cmTarget.s)}</b> — and into your meal bank for next time.`;
@@ -1858,7 +2043,8 @@ function renderRules(){
    <li><b>Protein first, calories capped, everything else lies where it lies.</b></li>
    <li><b>Fiber:</b> ${fiber}g+ a day at your calories. The fiber-forward badge marks meals carrying 8g+. Whole foods beat supplements — they keep you full.</li>
    <li><b>Can't track today?</b> Plate method: 25% starchy carb, 25% lean protein, 40% veg &amp; fruit, 10% fat. Eyeball it, move on, zero guilt.</li>
-   <li><b>One bad day ruins nothing.</b> Observations, not judgements — you're a macro scientist, remember?</li>
+   <li><b>One bad day ruins nothing — the week is the unit.</b> A single day over your calories can't undo a week any more than one salad creates a six-pack. Look at the 7-day average, adjust from there, and let individual days be what they actually are: normal life.</li>
+   <li><b>Observations, not judgements</b> — you're a macro scientist, remember?</li>
    <li><b>The scale lies daily and tells the truth monthly.</b> Trend lines, clothes, photos, energy. All of it counts.</li>
    <li><b>Your cycle should never stop.</b> If it does, you're cutting too hard — eat more and talk to your doctor. Non-negotiable.</li>
    <li><b>Vacations get a diet break, not a white-knuckle.</b> Mark the days ✈️ on your calendar and eat at maintenance — it's better for your metabolism than a miserable week of restriction, and it's the reason you'll still be doing this next year. Come home, open your map, keep going.</li>
